@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
-    <script type="module" crossorigin src="assets/index-CBA5dae4.js"></script>
+    <script type="module" crossorigin src="assets/index-CI4Z0p-z.js"></script>
     <link rel="stylesheet" crossorigin href="assets/index-Cz4zGhbH.css">
   </head>
   <body>
@@ -13,7 +13,22 @@
       <img src="vite.svg" class="logo" alt="Vite logo" />
       <img src="typescript.svg" class="logo vanilla" alt="TypeScript logo" />
       <h1>Random word</h1>
+
+      <!--TimeSet-->
+      <!--Fin TimeSet-->
+
+      <!-- Timer -->
+      <div class="timer-container">
+        <div id="timer">00:00:00</div>
+        <button id="start_btn">Start</button>
+        <button id="stop_btn">Stop</button>
+        <button id="reset_btn">Reset</button>
+        <script src="src/timer.ts"></script>
+      </div>
+      <!--Fin Timer-->
+
       <div class="card">
+        <p id="score"></p>
         <button id="next_word" type="button">START</button>
         <button id="guessed_word" type="button" style="display: none;">DEVINÉ</button>
         <button id="reset_words" type="button" style="display: none;">Réinitialiser</button>
