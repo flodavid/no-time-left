@@ -1,31 +1,14 @@
 import './style.css'
 import { loadGame, setupNextWord, setupGuessedWord, setupResetWords, setupNextRound } from './words.ts'
 
-loadGame(document.querySelector<HTMLButtonElement>('#next_word')!,
-            document.querySelector<HTMLButtonElement>('#guessed_word')!,
-            document.querySelector<HTMLButtonElement>('#reset_words')!,
-            document.querySelector<HTMLButtonElement>('#next_round')!)
+const nextWord = document.querySelector<HTMLButtonElement>('#next_word')!
+const guessedWord = document.querySelector<HTMLButtonElement>('#guessed_word')!
+const resetWords = document.querySelector<HTMLButtonElement>('#reset_words')!
+const nextRound = document.querySelector<HTMLButtonElement>('#next_round')!
+const word = document.querySelector<HTMLParagraphElement>('#word')!
 
-setupNextWord(document.querySelector<HTMLButtonElement>('#next_word')!,
-              document.querySelector<HTMLButtonElement>('#guessed_word')!,
-              document.querySelector<HTMLButtonElement>('#reset_words')!,
-              document.querySelector<HTMLButtonElement>('#next_round')!,
-              document.querySelector<HTMLParagraphElement>('#word')!)
-
-setupGuessedWord(document.querySelector<HTMLButtonElement>('#guessed_word')!,
-                document.querySelector<HTMLButtonElement>('#next_word')!,
-                document.querySelector<HTMLButtonElement>('#reset_words')!,
-                document.querySelector<HTMLButtonElement>('#next_round')!,
-                document.querySelector<HTMLParagraphElement>('#word')!)
-
-setupResetWords(document.querySelector<HTMLButtonElement>('#reset_words')!,
-                document.querySelector<HTMLButtonElement>('#next_word')!,
-                document.querySelector<HTMLButtonElement>('#guessed_word')!,
-                document.querySelector<HTMLButtonElement>('#next_round')!,
-                document.querySelector<HTMLParagraphElement>('#word')!)
-
-setupNextRound(document.querySelector<HTMLButtonElement>('#next_round')!,
-                document.querySelector<HTMLButtonElement>('#next_word')!,
-                document.querySelector<HTMLButtonElement>('#guessed_word')!,
-                document.querySelector<HTMLButtonElement>('#reset_words')!,
-                document.querySelector<HTMLParagraphElement>('#word')!)
+loadGame(nextWord, guessedWord, resetWords, nextRound)
+setupNextWord(nextWord, guessedWord, resetWords, nextRound, word)
+setupGuessedWord(guessedWord, nextWord, resetWords, nextRound, word)
+setupResetWords(resetWords, nextWord, guessedWord, nextRound, word)
+setupNextRound(nextRound, nextWord, guessedWord, resetWords, word)
