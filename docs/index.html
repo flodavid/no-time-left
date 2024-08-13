@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
-    <script type="module" crossorigin src="assets/index-CI4Z0p-z.js"></script>
+    <script type="module" crossorigin src="assets/index-B6iks6vr.js"></script>
     <link rel="stylesheet" crossorigin href="assets/index-Cz4zGhbH.css">
   </head>
   <body>
@@ -29,13 +29,16 @@
 
       <div class="card">
         <p id="score"></p>
-        <button id="next_word" type="button">START</button>
+        <button id="next_word" style="display: none;" type="button">Passer le mot</button>
         <button id="guessed_word" type="button" style="display: none;">DEVINÉ</button>
-        <button id="reset_words" type="button" style="display: none;">Réinitialiser</button>
-        <button id="next_round" type="button" style="display: none;">Manche suivante</button>
+        <button id="first_player" type="button" style="display: none;">Premier joueur</button>
+        <button id="next_player" type="button" style="display: none;">Ajouter un joueur</button>
         <p id="word"></p>
       </div>
+      <div class="card">
+        <button id="reset_words" type="button" style="display: none;">Réinitialiser</button>
+        <button id="next_round" type="button" style="display: none;">Manche suivante</button>
+      </div>
     </div>
-
   </body>
 </html>

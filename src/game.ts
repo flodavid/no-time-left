@@ -1,17 +1,17 @@
 import { words } from './words.ts'
+import * as Players from './players.ts'
 
 const GAME_WORDS_NUMBER = 10
 let message: HTMLParagraphElement
-let score: number
 let scoreText: HTMLParagraphElement
-let nextButton: HTMLButtonElement, guessButton: HTMLButtonElement, 
-    resetButton: HTMLButtonElement, nextRoundButton: HTMLButtonElement
+let startButton: HTMLButtonElement, nextButton: HTMLButtonElement, guessButton: HTMLButtonElement, resetButton: HTMLButtonElement, 
+    firstPlayerButton: HTMLButtonElement, nextPlayerButton: HTMLButtonElement, nextRoundButton: HTMLButtonElement
 
-function getRandomInt(max: number) {
+function getRandomInt (max: number) {
   return Math.floor(Math.random() * max)
 }
 
-function reverseString(str: string) {
+function reverseString (str: string) {
   return str.split("").reverse().join("")
 }
 
@@ -25,7 +25,7 @@ function reverseString(str: string) {
  *
  * @returns {string} modified url.
  */
-function addToWordsQueryStringParameter(word: string) {
+function addToWordsQueryStringParameter (word: string) {
   const url = new URL(window.location.href)
   if (word === null || word === undefined) {
     return url
@@ -44,8 +44,11 @@ function addToWordsQueryStringParameter(word: string) {
   }
 }
 
-function setRandomWord() {
-    const currentWords = getCurrentWords()
+function setRandomWord () {
+  console.log('Next random word')
+  scoreText.innerText = 'Player ' + (Players.getCurrentPlayer()) + ' score is: ' + Players.getCurrentPlayerScore()
+
+  const currentWords = getCurrentWords()
   if (currentWords === null || currentWords.length <= GAME_WORDS_NUMBER) {
     const wordIndex = getRandomInt(words.length)
     message.innerText = 'Le mot est : '+ words[wordIndex]
@@ -58,7 +61,7 @@ function setRandomWord() {
   }
 }
 
-function getCurrentWords() : Array<string>|null {
+function getCurrentWords () : Array<string>|null {
   const url = new URL(window.location.href)
   const currentWords = url.searchParams.get('words')
 
@@ -66,49 +69,67 @@ function getCurrentWords() : Array<string>|null {
 }
 
 
-function checkEndOfRound(): Boolean {
+function checkEndOfRound (): Boolean {
   const currentWords = getCurrentWords()
   if (currentWords !== null && currentWords?.length >= GAME_WORDS_NUMBER) {
     message.innerText = 'Fin du round'
     nextButton.style.display = 'none'
     guessButton.style.display = 'none'
+    nextPlayerButton.style.display = 'inline'
     nextRoundButton.style.display = 'inline'
     return true
   } else {
+    // TODO afficher le bouton "Joueur suivant" uniquement quand le timer est terminé
+    nextPlayerButton.style.display = 'inline'
+
     guessButton.style.display = 'inline'
     resetButton.style.display = 'inline'
     return false
   }
 }
 
-export function setupUserOutput(userScore: HTMLParagraphElement, word: HTMLParagraphElement) {
+export function setupUserOutput (userScore: HTMLParagraphElement, word: HTMLParagraphElement) {
   console.log('User output init')
   scoreText = userScore
   message = word
-  score = 0
 }
 
-export function setupNextWord(button: HTMLButtonElement) {
+export function setupStart (button: HTMLButtonElement) {
+  console.log('start button setup')
+  startButton = button
+
+  const start = () => {
+    console.log('(Re)Starting game')
+    startButton.style.visibility = 'hidden' // TODO déplacer dans timer et supprimer
+    nextButton.style.display = 'inline'
+    guessButton.style.display = 'inline'
+
+    Players.goToNextPlayer()
+    setRandomWord()
+  }
+  startButton.addEventListener('click', () => start())
+}
+
+export function setupNextWord (button: HTMLButtonElement) {
   console.log('next word button setup')
   nextButton = button
 
   const nextWord = () => {
     if (!checkEndOfRound()) {
-      button.innerText = 'Passer le mot'
-      scoreText.innerText = score.toString()
+      scoreText.innerText = 'Player ' + (Players.getCurrentPlayer()) + ' score is: ' + Players.getCurrentPlayerScore()
+
       setRandomWord()
     }
   }
   nextButton.addEventListener('click', () => nextWord())
 }
 
-export function setupGuessedWord(button: HTMLButtonElement) {
+export function setupGuessedWord (button: HTMLButtonElement) {
   console.log('guessed word button setup')
   guessButton = button
 
   const guessedWord = () => {
-    score += 1
-    scoreText.innerText = score.toString()
+    scoreText.innerText = 'Player ' + (Players.getCurrentPlayer()) + ' score is: ' + Players.addPointToCurrentPlayer()
 
     if (checkEndOfRound()) {
       // TODO arrêt timer
@@ -121,7 +142,7 @@ export function setupGuessedWord(button: HTMLButtonElement) {
   guessButton.addEventListener('click', () => guessedWord())
 }
 
-export function setupResetWords(button: HTMLButtonElement) {
+export function setupResetWords (button: HTMLButtonElement) {
   console.log('reset words button setup')
   resetButton = button
 
@@ -132,13 +153,15 @@ export function setupResetWords(button: HTMLButtonElement) {
     history.pushState({}, '', url)
 
     // Reset scores
-    score = 0
+    Players.resetAll()
 
     // Reset buttons and current word
     message.innerText =''
     button.style.display = 'none'
-    nextButton.innerText = 'RESTART'
-    nextButton.style.display = 'inline'
+    scoreText.style.display = 'none'
+    startButton.style.display = 'inline'
+    startButton.innerText = 'Restart'
+    nextPlayerButton.style.display = 'none'
     guessButton.style.display = 'none'
     nextRoundButton.style.display = 'none'
   }
@@ -146,7 +169,42 @@ export function setupResetWords(button: HTMLButtonElement) {
   button.addEventListener('click', () => resetWords())
 }
 
-export function setupNextRound(button: HTMLButtonElement) {
+/**
+ * @TODO 
+ * @param button 
+ */
+export function setupFirstPlayer (button: HTMLButtonElement) {
+  console.log('next round button setup')
+  firstPlayerButton = button
+
+  const firstPlayer = () => {
+    firstPlayerButton.style.display = 'none'
+    // TODO
+  }
+
+  button.addEventListener('click', () => firstPlayer())
+}
+
+/**
+ * @TODO 
+ * @param button 
+ */
+export function setupNextPlayer (button: HTMLButtonElement) {
+  console.log('next round button setup')
+  nextPlayerButton = button
+
+  const nextPlayer = () => {
+    const playerIdx = Players.goToNextPlayer()
+    scoreText.innerText = 'Player ' + (playerIdx) + ' score is: ' + Players.getCurrentPlayerScore()
+    firstPlayerButton.style.display = 'inline'
+    
+    // TODO start timer
+  }
+
+  button.addEventListener('click', () => nextPlayer())
+}
+
+export function setupNextRound (button: HTMLButtonElement) {
   console.log('next round button setup')
   nextRoundButton = button
 
@@ -156,22 +214,26 @@ export function setupNextRound(button: HTMLButtonElement) {
     
     message.innerText =''
     nextRoundButton.style.display = 'none'
-    nextButton.innerText = 'Passer le mot'
     nextButton.style.display = 'inline'
     guessButton.style.display = 'inline'
+    firstPlayerButton.style.display = 'none'
     resetButton.style.display = 'inline'
 
-    score = 0
-    scoreText.innerText = score.toString()
+    const playerIdx = Players.goToNextPlayer()
+    scoreText.innerText = 'Player ' + (playerIdx) + ' score is: ' + Players.getCurrentPlayerScore()
 
+    Players.endRound()
     setRandomWord()
   }
 
   button.addEventListener('click', () => nextRound())
 }
 
-export function loadGame() {
-  console.log('loading game')
+/**
+ * Retrieve the words saved as query parameters
+ */
+export function loadWords () {
+  console.log('reading words from URL')
    
   const currentWords = getCurrentWords()
   if (currentWords !== null && currentWords?.length > 0) {
@@ -179,11 +241,12 @@ export function loadGame() {
     if (currentWords?.length >= GAME_WORDS_NUMBER) {
       nextButton.style.display = 'none'
       guessButton.style.display = 'none'
+      nextPlayerButton.style.display = 'none'
       nextRoundButton.style.display = 'inline'
     } else {
-      nextButton.innerText = 'Passer le mot'
       nextButton.style.display = 'inline'
       guessButton.style.display = 'inline'
+      nextPlayerButton.style.display = 'inline'
       nextRoundButton.style.display = 'none'
     }
   } else {

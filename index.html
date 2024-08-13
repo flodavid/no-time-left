@@ -27,11 +27,15 @@
 
       <div class="card">
         <p id="score"></p>
-        <button id="next_word" type="button">START</button>
+        <button id="next_word" style="display: none;" type="button">Passer le mot</button>
         <button id="guessed_word" type="button" style="display: none;">DEVINÉ</button>
+        <button id="first_player" type="button" style="display: none;">Premier joueur</button>
+        <button id="next_player" type="button" style="display: none;">Ajouter un joueur</button>
+        <p id="word"></p>
+      </div>
+      <div class="card">
         <button id="reset_words" type="button" style="display: none;">Réinitialiser</button>
         <button id="next_round" type="button" style="display: none;">Manche suivante</button>
-        <p id="word"></p>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
