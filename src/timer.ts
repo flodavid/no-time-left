@@ -57,17 +57,66 @@ class Timer {
     }
 }
 
-// Usage
+
+let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, playButton: HTMLButtonElement, resetButton: HTMLButtonElement
 const timer = new Timer('timer');
 
-document.getElementById('start_btn')?.addEventListener('click', () => {
-    timer.start();
-});
+export function setupStartTimer (button: HTMLButtonElement) {
+    console.log('start timer setup')
+    startButton = button
+  
+    const start = () => {
+      console.log('Starting timer')
+      timer.start()
+    
+      startButton.disabled = true
+      pauseButton.disabled = false
+      resetButton.disabled = false
+    }
+    button.addEventListener('click', () => start())
+}
 
-document.getElementById('stop_btn')?.addEventListener('click', () => {
-    timer.stop();
-});
+export function setupPauseTimer (button: HTMLButtonElement) {
+    console.log('stop timer setup')
+    pauseButton = button
 
-document.getElementById('reset_btn')?.addEventListener('click', () => {
-    timer.reset();
-});
+    const pause = () => {
+      console.log('Stopping timer')
+      timer.stop()
+    
+      pauseButton.style.display = 'none'
+      playButton.style.display = 'inline'
+    }
+    button.addEventListener('click', () => pause())
+}
+
+export function setupPlayTimer (button: HTMLButtonElement) {
+    console.log('stop timer setup')
+    playButton = button
+
+    const play= () => {
+      console.log('Stopping timer')
+      timer.start()
+    
+      pauseButton.style.display = 'inline'
+      playButton.style.display = 'none'
+    }
+    button.addEventListener('click', () => play())
+}
+
+export function setupResetTimer (button: HTMLButtonElement) {
+    console.log('reset timer setup')
+    resetButton = button
+
+    const reset = () => {
+        console.log('Resetting timer')
+        timer.reset();
+      
+        startButton.disabled = false
+        pauseButton.disabled = true
+        pauseButton.style.display = 'inline'
+        playButton.style.display = 'none'
+        resetButton.disabled = true
+      }
+      button.addEventListener('click', () => reset())
+}

@@ -100,7 +100,6 @@ export function setupStart (button: HTMLButtonElement) {
 
   const start = () => {
     console.log('(Re)Starting game')
-    startButton.style.visibility = 'hidden' // TODO déplacer dans timer et supprimer
     nextButton.style.display = 'inline'
     guessButton.style.display = 'inline'
 
