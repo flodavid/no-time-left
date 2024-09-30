@@ -1,7 +1,6 @@
 import './style.css'
-import * as Game from './game.ts'
-import * as Players from './players.ts'
-import * as Timer from './timer.ts'
+import * as Players from './teams.ts'
+import * as Interface from './interface.ts'
 
 
 const start = document.querySelector<HTMLButtonElement>('#start_btn')!
@@ -10,30 +9,33 @@ const play = document.querySelector<HTMLButtonElement>('#play_btn')!
 const reset = document.querySelector<HTMLButtonElement>('#reset_btn')!
 
 const score = document.querySelector<HTMLParagraphElement>('#score')!
-const nextWord = document.querySelector<HTMLButtonElement>('#next_word')!
+const remaining = document.querySelector<HTMLParagraphElement>('#remaining')!
+const skipWord = document.querySelector<HTMLButtonElement>('#skip_word')!
 const guessedWord = document.querySelector<HTMLButtonElement>('#guessed_word')!
 const resetWords = document.querySelector<HTMLButtonElement>('#reset_words')!
 
-const firstPlayer = document.querySelector<HTMLButtonElement>('#first_player')!
-const nextPlayer = document.querySelector<HTMLButtonElement>('#next_player')!
+const nextTeam = document.querySelector<HTMLButtonElement>('#next_team')!
 const nextRound = document.querySelector<HTMLButtonElement>('#next_round')!
 const message = document.querySelector<HTMLParagraphElement>('#word')!
 
-Timer.setupStartTimer(start)
-Timer.setupPauseTimer(pause)
-Timer.setupPlayTimer(play)
-Timer.setupResetTimer(reset)
+// TODO remove
+const endTimer = document.querySelector<HTMLButtonElement>('#end_timer')!
 
-Game.setupUserOutput(score, message)
-Game.setupStart(start)
+Interface.setupUserOutput(score, remaining, message)
+Interface.setupStart(start)
+Interface.setupPauseTimer(pause)
+Interface.setupPlayTimer(play)
+Interface.setupResetTimer(reset)
 
-Game.setupNextWord(nextWord)
-Game.setupGuessedWord(guessedWord)
-Game.setupResetWords(resetWords)
+Interface.setupSkipWord(skipWord)
+Interface.setupGuessedWord(guessedWord)
+Interface.setupResetWords(resetWords)
 
-Game.setupFirstPlayer(firstPlayer)
-Game.setupNextPlayer(nextPlayer)
-Game.setupNextRound(nextRound)
+Interface.setupNextTeam(nextTeam)
+Interface.setupNextRound(nextRound)
 
-Game.loadWords()
+// TODO remove
+Interface.setupEndTimer(endTimer)
+
+// Game.loadWords()
 Players.loadScores()
