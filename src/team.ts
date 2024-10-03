@@ -1,6 +1,6 @@
 
 export class Team {
-    private name: string
+    public name: string
     public score: number
     
     constructor(teamName: string, teamScore : number = 0) {

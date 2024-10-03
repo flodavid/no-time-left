@@ -1,48 +1,145 @@
 import { words } from './words.ts'
 import * as utils from './utils.ts'
+import { Timer } from './timer.ts'
+import { resetTeams, addPointToCurrentTeam, goToNextTeam } from './teams.ts';
+export { resetTeams, getCurrentTeam, getCurrentTeamScore, goToNextTeam, isLastTeam } from './teams.ts';
 
-const GAME_WORDS_NUMBER = 10 // TODO replace by user input
+const GAME_WORDS_NUMBER : number = 10 // TODO replace by user input
+const timer = new Timer('timer');
 
-export let remaining: number
-export let randomWord: string
+export enum Round {
+  Description,
+  Word,
+  Signs,
+  End,
+}
+
+export let randomWord: string|undefined
+export let round: Round
+
+let gameWords: string[] = []
+export let guessedWords: string[] = []
+
+/******************/
+/*    Actions     */
+/******************/
 
 function nextRandomWord () {
-  const currentWords = getCurrentWords()
-  if (currentWords === null || currentWords.length <= GAME_WORDS_NUMBER) {
+  readGameWords()
+  if (gameWords.length + guessedWords.length < GAME_WORDS_NUMBER) {
     randomWord = words[utils.getRandomInt(words.length)]
     utils.addToWordsQueryStringParameter(randomWord)
   } else {
-    const wordIndex = utils.getRandomInt(currentWords.length)
-    let word = decodeURIComponent(currentWords[wordIndex])
-    randomWord = utils.reverseString(word)
+    randomWord = gameWords.shift()
   }
 }
 
-function getCurrentWords () : Array<string>|null {
-  const url = new URL(window.location.href)
-  const currentWords = url.searchParams.get('words')
+/**
+ * Read the gamewords from the URL and add them to the game if there are none yet
+ */
+function readGameWords () {
+  // If game words have not been initialized, get words from URL and store them
+  if (gameWords.length === 0) {
+    const url = new URL(window.location.href)
+    const urlWords = url.searchParams.get('words')
+    const storedWordList = urlWords !== null ? urlWords?.split('_') : []
+    for (const word of storedWordList) {
+      if (gameWords.length === GAME_WORDS_NUMBER) break
+      gameWords.push(utils.reverseString(decodeURIComponent(word)))
+    }
+    shuffle(gameWords)
+    
+  }
 
-  return currentWords !== null ? currentWords?.split('_') : null
+  if (gameWords === null) gameWords = []
+}
+
+function shuffle (array: string[]) { 
+  return array.sort(() => Math.random() - 0.5)
 }
 
 /**
  * Update the score, the words remaining, and get a new random word if needed
- * @returns true if there are remainging words to guess
+ * @returns true if there are remaining words to guess
  */
 export function wordFound (): boolean {
-  --remaining
+  if (randomWord) guessedWords.push(randomWord)
 
+  addPointToCurrentTeam()
   nextRandomWord()
 
-  return remaining > 0
+  return guessedWords.length < GAME_WORDS_NUMBER
 }
 
 /**
  * Get a new random word if needed
  */
 export function wordNotFound () {
+  if (randomWord) gameWords.push(randomWord)
   nextRandomWord()
 }
+
+/**
+ * Start the team turn
+ */
+export function startTurn () {
+  nextRandomWord()
+  goToNextTeam()
+  timer.start()
+
+  if (round < Round.End) {
+  }
+}
+
+/**
+ * Pause the current turn
+ */
+export function pause () {
+  timer.stop()
+}
+
+/**
+ * Pause the current turn
+ */
+export function resume () {
+  timer.start()
+}
+
+/**
+ * End the round, intialize a new one if necessary
+ */
+export function endRound () {
+  // Go to next round if it is not the last one
+  ++round
+  gameWords = []
+  guessedWords = []
+  if (round < Round.End) {
+    nextRandomWord()
+  }
+
+  endRound()
+}
+
+export function resetGame () {
+  console.log('resetting game')
+  
+  round = Round.Description
+  gameWords = []
+  guessedWords = []
+  randomWord = ''
+
+  timer.reset()
+  resetTeams()
+  
+  // Reset URL words
+  const url = new URL(window.location.href)
+  url.searchParams.set('words', '')
+}
+
+
+/******************/
+/*      Data      */
+/******************/
 
 // /**
 //  * Get the score of the current team
@@ -65,13 +162,10 @@ export function wordNotFound () {
 // }
 
 export function hasWords () : boolean {
-  const currentWords = getCurrentWords()
-  if (currentWords !== null) return getCurrentWords.length > 0
+  if (gameWords !== null) return gameWords.length > 0
   else return false
 }
 
-export function resetGame () {
-  console.log('resetting game')
-  
-  remaining = GAME_WORDS_NUMBER
+export function remainingWords () : number {
+  return GAME_WORDS_NUMBER - guessedWords.length
 }

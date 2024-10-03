@@ -1,6 +1,4 @@
 import * as Game from './game.ts'
-import * as Teams from './teams.ts'
-import { Timer } from './timer.ts'
 
 let message: HTMLParagraphElement
 let scoreText: HTMLParagraphElement
@@ -9,28 +7,21 @@ let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, playButton: 
     skipButton: HTMLButtonElement, guessButton: HTMLButtonElement,
     resetButton: HTMLButtonElement, nextRoundButton: HTMLButtonElement,
     nextTeamButton: HTMLButtonElement
-let endTimerButton: HTMLButtonElement // TODO remove
-
-const timer = new Timer('timer');
 
 function updateTexts() {
   // Word to guess
-  const wordToGuess = Game.randomWord
-  if (wordToGuess != null) {
+  if (Game.randomWord != null) {
     message.innerText = 'Le mot est : ' + Game.randomWord
   } else {
     message.innerText = 'Manche terminée'
   }
   // Score
-  
-  scoreText.innerText = 'Le score de l\'équipe ' + Teams.getCurrentTeam().toString() + ' est : ' + Teams.getCurrentTeamScore().toString()
+  scoreText.innerText = 'Le score de l\'équipe ' + Game.getCurrentTeam()?.name + ' est : ' + Game.getCurrentTeam()?.score.toString()
   // scoreText.innerText = Game.currentScore().toString()
+  
   // Remaining
-  remainingText.innerText = Game.remaining.toString()
+  remainingText.innerText = Game.remainingWords().toString()
 }
-
-// guessButton.style.display = 'inline'
-// resetButton.style.display = 'inline'
 
 export function setupUserOutput(userScore: HTMLParagraphElement, wordsRemaining: HTMLParagraphElement, word: HTMLParagraphElement) {
   console.log('User output init')
@@ -53,9 +44,8 @@ export function setupStart(button: HTMLButtonElement) {
     }
 
     Game.resetGame()
-    timer.start()
-    Teams.goToNextTeam()
-    Game.wordNotFound()
+    Game.startTurn()
+    
     updateTexts()
 
     message.innerText = ''
@@ -75,7 +65,7 @@ export function setupPauseTimer (button: HTMLButtonElement) {
 
   const pause = () => {
     console.log('Stopping timer')
-    timer.stop()
+    Game.pause()
   
     pauseButton.style.display = 'none'
     playButton.style.display = 'inline'
@@ -89,7 +79,7 @@ export function setupResetTimer (button: HTMLButtonElement) {
 
     const reset = () => {
         console.log('Resetting timer')
-        timer.reset();
+        Game.resetGame();
       
         startButton.disabled = false
         pauseButton.disabled = true
@@ -107,8 +97,8 @@ export function setupPlayTimer (button: HTMLButtonElement) {
     playButton = button
 
     const play= () => {
-      console.log('Stopping timer')
-      timer.start()
+      console.log('Resuming timer')
+      Game.resume()
     
       pauseButton.style.display = 'inline'
       playButton.style.display = 'none'
@@ -133,7 +123,6 @@ export function setupGuessedWord(button: HTMLButtonElement) {
 
   const guessedWord = () => {
     const wordsRemaining = Game.wordFound()
-    Teams.getCurrentTeam
     updateTexts()
 
     if (!wordsRemaining) {
@@ -173,7 +162,7 @@ export function setupResetWords(button: HTMLButtonElement) {
     // nextPlayerButton.style.display = 'none' // TODO
     guessButton.style.display = 'none'
     nextRoundButton.style.display = 'none'
-    Teams.resetTeams()
+    Game.resetTeams()
     
     // TODO afficher le bouton "Joueur suivant" uniquement quand le timer est terminé
     nextTeamButton.style.display = 'inline'
@@ -194,8 +183,8 @@ export function setupNextTeam (button: HTMLButtonElement) {
   const nextTeam = () => {
     message.innerText = ''
 
-    const teamIdx = Teams.goToNextTeam()
-    scoreText.innerText = 'Le score de l\'équipe ' + (teamIdx) + ' est : ' + Teams.getCurrentTeamScore()
+    const teamIdx = Game.goToNextTeam()
+    scoreText.innerText = 'Le score de l\'équipe ' + (teamIdx) + ' est : ' + Game.getCurrentTeamScore()
     nextTeamButton.style.display = 'none'
     nextRoundButton.style.display = 'none'
     resetButton.disabled = true
@@ -210,11 +199,10 @@ export function setupNextRound (button: HTMLButtonElement) {
   nextRoundButton = button
 
   const nextRound = () => {
-    Teams.goToFirstTeam()
+    Game.endRound()
     
     message.innerText = ''
     updateTexts()
-    timer.reset()
 
     skipButton.style.display = 'none'
     guessButton.style.display = 'none'
@@ -228,19 +216,16 @@ export function setupNextRound (button: HTMLButtonElement) {
 }
 
 export function setupEndTimer (button: HTMLButtonElement) {
-  endTimerButton = button
   
   const endTimer = () => {
-    timer.stop() // Fake event
+    Game.pause() // Fake event
 
     message.innerText = 'Fin du temps !'
-    
-    Teams.goToNextTeam()
 
     startButton.disabled = false
     pauseButton.disabled = true
     nextTeamButton.style.display = 'inline'
-    if (Teams.isLastTeam()) {
+    if (Game.isLastTeam()) {
       nextRoundButton.style.display = 'inline'
       nextTeamButton.innerText = 'Ajouter une équipe'
     } else {

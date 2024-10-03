@@ -1,7 +1,7 @@
 import { Team } from './team.ts'
 
 let teams: Array<Team>
-let CURRENT_TEAM = 0
+let current_team = 0
 
 
 /*****************/
@@ -21,23 +21,15 @@ function addTeam () {
 }
 
 /**
- * Select the next player in line
+ * Change team to the next one in line
  * @returns the index of the player selected
  */
 export function goToNextTeam () {
-  CURRENT_TEAM ++
-  if (CURRENT_TEAM > teams.length) {
-    return addTeam()
+  ++current_team
+  if (current_team > teams.length - 1) {
+    return addTeam() - 1
   }
-  return CURRENT_TEAM
-}
-
-/**
- * Select the next player in line
- * @returns the index of the player selected
- */
-export function goToFirstTeam () {
-  CURRENT_TEAM = 0
+  return current_team
 }
 
 /**
@@ -46,7 +38,7 @@ export function goToFirstTeam () {
 export function resetTeams () {
   console.log('Resetting teams')
   teams = []
-  CURRENT_TEAM = 0
+  current_team = -1
 }
 
 /**
@@ -54,32 +46,29 @@ export function resetTeams () {
  * @returns the index of the player selected
  */
 export function endRound () {
+  current_team = 0
   resetRoundScores()
 }
 
-/**
- * Change team to the next one in line
- * @returns the new current team index
- */
-export function nextTeam() {
-  ++CURRENT_TEAM
-  if (CURRENT_TEAM >= teams.length) {
-    CURRENT_TEAM = 0
-  }
-  return CURRENT_TEAM
-  // TODO reset timer
-}
+// /**
+//  * Get the current player name
+//  * @returns the index of the player
+//  */
+// export function getCurrentTeam () : Team {
+//   return teams[CURRENT_TEAM]
+// }
 
 /**
  * Get the current player name
  * @returns the index of the player
  */
-export function getCurrentTeam () : number {
-  return CURRENT_TEAM
+export function getCurrentTeam () : Team|null {
+  if (teams.length === 0) return new Team('?')
+  return teams[current_team]
 }
 
 export function isLastTeam () {
-  return CURRENT_TEAM === teams.length
+  return current_team === teams.length
 }
 
 /*****************/
@@ -91,10 +80,10 @@ export function isLastTeam () {
  * @returns the score of the player after adding the point
  */
 export function addPointToCurrentTeam () : number {
-  console.log('Adding a point to player', CURRENT_TEAM)
-  teams[CURRENT_TEAM - 1].score ++
+  console.log('Adding a point to player', current_team)
+  teams[current_team].score ++
   // TODO save to query params
-  return teams[CURRENT_TEAM - 1].score
+  return teams[current_team].score
 }
 
 /**
@@ -102,8 +91,8 @@ export function addPointToCurrentTeam () : number {
  * @returns the score of the player
  */
 export function getCurrentTeamScore () : number {
-  if (CURRENT_TEAM == 0) return 0
-  return teams[CURRENT_TEAM - 1].score
+  if (current_team == 0) return 0
+  return teams[current_team].score
 }
 
 function getCurrentTeams() : Array<string>|null {
@@ -118,7 +107,7 @@ function getCurrentTeams() : Array<string>|null {
 export function loadScores () {
   console.log('reading scores from URL')
   teams = []
-  CURRENT_TEAM = 0
+  current_team = 0
 
   const teamsString = getCurrentTeams()
   if (teamsString !== null && teams?.length > 0) {
@@ -131,7 +120,7 @@ export function loadScores () {
       }
     }
   } else {
-    CURRENT_TEAM = 0
+    current_team = 0
   }
 }
 
@@ -144,7 +133,7 @@ export function loadScores () {
  */
 export function resetAll() {
   teams = []
-  CURRENT_TEAM = 0
+  current_team = 0
 }
 
 /**
@@ -162,5 +151,5 @@ export function resetRoundScores() {
  */
 export function restart() {
   resetRoundScores()
-  CURRENT_TEAM = 0
+  current_team = 0
 }
