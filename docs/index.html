@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
-    <script type="module" crossorigin src="assets/index-CKqBp8zg.js"></script>
-    <link rel="stylesheet" crossorigin href="assets/index-Cz4zGhbH.css">
+    <script type="module" crossorigin src="./assets/index-Cc9nY5k7.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cz4zGhbH.css">
   </head>
   <body>
     <div id="app">
@@ -19,26 +19,33 @@
 
       <!-- Timer -->
       <div class="timer-container">
-        <div id="timer">00:00:00</div>
-        <button id="start_btn">Start</button>
+        <div id="timer">00:00</div>
         <button id="pause_btn" disabled>Pause</button>
         <button id="play_btn" style="display: none;">Reprendre</button>
-        <button id="reset_btn" disabled>Recommencer</button>
+        <button id="stop_btn" style="display: none;">Stop</button>
       </div>
       <!--Fin Timer-->
 
-      <div class="card">
+      <div class="card"></div>
+        <div id="words_left" style="padding-bottom: 1.5em;" hidden>
+          <span>Reste </span><span id="remaining">0</span><span> mots</span>
+        </div>
         <p id="score"></p>
-        <button id="next_word" style="display: none;" type="button">Passer le mot</button>
-        <button id="guessed_word" type="button" style="display: none;">DEVINÉ</button>
-        <button id="first_player" type="button" style="display: none;">Premier joueur</button>
-        <button id="next_player" type="button" style="display: none;">Ajouter un joueur</button>
-        <p id="word"></p>
+        <div id="turn_buttons" hidden>
+          <button id="skip_word" type="button">Passer le mot</button>        
+          <button id="guessed_word" type="button">Deviné</button>
+          <button id="next_team" type="button" style="display: none;">Equipe suivante</button>
+          <button id="next_round" type="button" style="display: none;">Manche suivante</button>
+        </div>
+        <div>
+        <p id="word">Prêts à commencer ?</p>
+        <button id="start_btn">Démarrer</button><button id="end_timer" type="button">TMP Fin timer</button>
       </div>
       <div class="card">
         <button id="reset_words" type="button" style="display: none;">Réinitialiser</button>
-        <button id="next_round" type="button" style="display: none;">Manche suivante</button>
+        <button id="reset_btn" style="display: none;">Reset</button>
       </div>
     </div>
+
   </body>
 </html>

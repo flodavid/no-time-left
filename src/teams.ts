@@ -16,20 +16,17 @@ function addTeam () {
   console.log('Adding a team')
   teams.push(new Team((teams.length + 1).toString()))
   console.log('Total is', teams.length, 'players')
-  return teams.length
   // TODO save to query params
 }
 
 /**
  * Change team to the next one in line
- * @returns the index of the player selected
  */
 export function goToNextTeam () {
   ++current_team
   if (current_team > teams.length - 1) {
-    return addTeam() - 1
+    addTeam()
   }
-  return current_team
 }
 
 /**

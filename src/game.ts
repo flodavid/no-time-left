@@ -1,8 +1,8 @@
 import { words } from './words.ts'
-import * as utils from './utils.ts'
+import * as Utils from './utils.ts'
 import { Timer } from './timer.ts'
-import { resetTeams, addPointToCurrentTeam, goToNextTeam } from './teams.ts';
-export { resetTeams, getCurrentTeam, getCurrentTeamScore, goToNextTeam, isLastTeam } from './teams.ts';
+import { loadScores, resetTeams, addPointToCurrentTeam, goToNextTeam } from './teams.ts';
+export { getCurrentTeam, getCurrentTeamScore, goToNextTeam, isLastTeam } from './teams.ts';
 
 const GAME_WORDS_NUMBER : number = 10 // TODO replace by user input
 const timer = new Timer('timer');
@@ -27,8 +27,8 @@ export let guessedWords: string[] = []
 function nextRandomWord () {
   readGameWords()
   if (gameWords.length + guessedWords.length < GAME_WORDS_NUMBER) {
-    randomWord = words[utils.getRandomInt(words.length)]
-    utils.addToWordsQueryStringParameter(randomWord)
+    randomWord = words[Utils.getRandomInt(words.length)]
+    Utils.addToWordsQueryStringParameter(randomWord)
   } else {
     randomWord = gameWords.shift()
   }
@@ -45,17 +45,13 @@ function readGameWords () {
     const storedWordList = urlWords !== null ? urlWords?.split('_') : []
     for (const word of storedWordList) {
       if (gameWords.length === GAME_WORDS_NUMBER) break
-      gameWords.push(utils.reverseString(decodeURIComponent(word)))
+      gameWords.push(Utils.reverseString(decodeURIComponent(word)))
     }
-    shuffle(gameWords)
+    Utils.shuffleArray(gameWords)
     
   }
 
   if (gameWords === null) gameWords = []
-}
-
-function shuffle (array: string[]) { 
-  return array.sort(() => Math.random() - 0.5)
 }
 
 /**
@@ -80,14 +76,34 @@ export function wordNotFound () {
 }
 
 /**
+ * Setup default action (always triggered) on timer end.
+ * 
+ * The current random word is put back the word at the start of the word stack,
+ * for the next player to draw it
+ */
+function setEndTimerAction () {
+  timer.onTimerEnd = () => {
+    // Reinsert random word and unset it
+    if (randomWord) {
+      gameWords.unshift(randomWord)
+      randomWord = undefined
+    }
+  }
+}
+
+/**
  * Start the team turn
  */
 export function startTurn () {
-  nextRandomWord()
-  goToNextTeam()
-  timer.start()
-
   if (round < Round.End) {
+    nextRandomWord()
+    goToNextTeam()
+
+    timer.start()
+    setEndTimerAction()
+    
+  } else {
+    console.error('END OF GAME == NOT IMPLEMENTED') // TODO add end of game actions (show scores)
   }
 }
 
@@ -120,20 +136,42 @@ export function endRound () {
   endRound()
 }
 
-export function resetGame () {
-  console.log('resetting game')
-  
-  round = Round.Description
+
+/**
+ * Set the game to its initial state
+ */
+export function initGame () {
+  loadScores()
+  resetTeams()
   gameWords = []
   guessedWords = []
+  round = Round.Description
   randomWord = ''
+}
 
+/**
+ * 
+ */
+export function addEndTimerAction (_endTimerAction: () => void) {
+  // Setup actions on timer end
+  // timer.onTimerEnd = () => {
+  //   endTimerActions()
+  // }
+}
+
+/**
+ * Reset the game to its initial state.
+ * Words, teams, scores are wiped, buttons are set to their initial state 
+ */
+export function resetGame () {
+  initGame()
   timer.reset()
   resetTeams()
   
-  // Reset URL words
+  // Reset words in URL
   const url = new URL(window.location.href)
-  url.searchParams.set('words', '')
+  url.searchParams.delete('words')
+  history.pushState({}, '', url)
 }
 
 
