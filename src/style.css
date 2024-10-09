@@ -32,7 +32,9 @@ body {
 
 h1 {
   font-size: 3.0em;
-  line-height: 1.1;
+  line-height: 1;
+  margin-top: 44px;
+  margin-bottom: 20px;
 }
 
 /**********************/
@@ -53,7 +55,7 @@ h1 {
 
 .logo {
   height: 6em;
-  padding: 0.5em;
+  padding: 1em;
   will-change: filter;
   transition: filter 300ms;
 }

@@ -36,6 +36,7 @@ export function resetTeams () {
   console.log('Resetting teams')
   teams = []
   current_team = -1
+  goToNextTeam()
 }
 
 /**

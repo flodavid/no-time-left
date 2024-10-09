@@ -1,23 +1,34 @@
 export class Timer {
-    private element: HTMLElement;
+    private timerText: HTMLDivElement;
     private interval: number | null;
     private seconds: number;
     private minutes: number;
-    private hours: number;
+    private static INITIAL_TIME_SECONDS : number = 5 // TODO replace by user input
+    
+    public onTimerEnd: Array<() => void>
 
     constructor(elementId: string) {
-        this.element = document.getElementById(elementId) as HTMLElement;
+        this.timerText = document.getElementById(elementId) as HTMLDivElement;
         this.interval = null;
         this.seconds = 0;
         this.minutes = 0;
-        this.hours = 0;
+        this.onTimerEnd = []
     }
 
     public start(): void {
-        if (!this.interval) {
-            this.interval = window.setInterval(() => {
-                this.updateTimer();
-            }, 1000);
+        this.seconds = Timer.INITIAL_TIME_SECONDS % 60;
+        this.minutes = Math.floor(Timer.INITIAL_TIME_SECONDS / 60 );
+        this.resume()
+    }
+
+    public resume(): void {
+        if (this.seconds > 0 || this.minutes > 0) {
+            if (!this.interval) {
+                this.updateDisplay();
+                this.interval = window.setInterval(() => {
+                    this.updateTimer();
+                }, 1000);
+            }
         }
     }
 
@@ -32,27 +43,34 @@ export class Timer {
         this.stop();
         this.seconds = 0;
         this.minutes = 0;
-        this.hours = 0;
         this.updateDisplay();
+    }
+
+    public isRunning(): boolean {
+        return this.interval !== null
     }
 
     private updateTimer(): void {
-        this.seconds++;
+        --this.seconds;
         if (this.seconds === 60) {
             this.seconds = 0;
             this.minutes++;
-            if (this.minutes === 60) {
-                this.minutes = 0;
-                this.hours++;
-            }
         }
         this.updateDisplay();
+        
+        // End timer event
+        if ( this.seconds <= 0) {
+            this.stop()
+
+            for (var timerEndMethod of this.onTimerEnd) {
+                timerEndMethod()
+            }
+        }
     }
 
     private updateDisplay(): void {
-        const hours = this.hours.toString().padStart(2, '0');
         const minutes = this.minutes.toString().padStart(2, '0');
         const seconds = this.seconds.toString().padStart(2, '0');
-        this.element.textContent = `${hours}:${minutes}:${seconds}`;
+        this.timerText.textContent = `${minutes}:${seconds}`;
     }
 }

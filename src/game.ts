@@ -1,7 +1,7 @@
 import { words } from './words.ts'
 import * as Utils from './utils.ts'
 import { Timer } from './timer.ts'
-import { loadScores, resetTeams, addPointToCurrentTeam, goToNextTeam } from './teams.ts';
+import { loadScores, resetTeams, addPointToCurrentTeam } from './teams.ts';
 export { getCurrentTeam, getCurrentTeamScore, goToNextTeam, isLastTeam } from './teams.ts';
 
 const GAME_WORDS_NUMBER : number = 10 // TODO replace by user input
@@ -81,14 +81,14 @@ export function wordNotFound () {
  * The current random word is put back the word at the start of the word stack,
  * for the next player to draw it
  */
-function setEndTimerAction () {
-  timer.onTimerEnd = () => {
+function setGameEndTimerAction () {
+  addEndTimerAction(() => {
     // Reinsert random word and unset it
     if (randomWord) {
       gameWords.unshift(randomWord)
       randomWord = undefined
     }
-  }
+  })
 }
 
 /**
@@ -97,10 +97,9 @@ function setEndTimerAction () {
 export function startTurn () {
   if (round < Round.End) {
     nextRandomWord()
-    goToNextTeam()
 
     timer.start()
-    setEndTimerAction()
+    setGameEndTimerAction()
     
   } else {
     console.error('END OF GAME == NOT IMPLEMENTED') // TODO add end of game actions (show scores)
@@ -152,11 +151,9 @@ export function initGame () {
 /**
  * 
  */
-export function addEndTimerAction (_endTimerAction: () => void) {
-  // Setup actions on timer end
-  // timer.onTimerEnd = () => {
-  //   endTimerActions()
-  // }
+export function addEndTimerAction (endTimerAction: () => void) {
+  // Add action on timer end
+  timer.onTimerEnd.push(() => endTimerAction())
 }
 
 /**
@@ -174,18 +171,9 @@ export function resetGame () {
   history.pushState({}, '', url)
 }
 
-
 /******************/
 /*      Data      */
 /******************/
-
-// /**
-//  * Get the score of the current team
-//  * @returns the score
-//  */
-// export function currentScore(): number {
-//   return teams[currentTeam].score
-// }
 
 /**
  * Retrieve the words saved as query parameters
@@ -206,4 +194,8 @@ export function hasWords () : boolean {
 
 export function remainingWords () : number {
   return GAME_WORDS_NUMBER - guessedWords.length
+}
+
+export function isTimerRunning () : boolean {
+  return timer.isRunning()
 }
