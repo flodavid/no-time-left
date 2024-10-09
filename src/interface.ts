@@ -10,14 +10,13 @@ let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, playButton: 
     nextTeamButton: HTMLButtonElement
 
 function updateTexts() {
-  // Word to guess
   if (Game.randomWord != null) {
     message.innerText = 'Le mot est : ' + Game.randomWord
   } else {
     message.innerText = 'Manche terminée'
   }
   // Score
-  scoreText.innerText = 'Le score de l\'équipe ' + Game.getCurrentTeam()?.name + ' est : ' + Game.getCurrentTeam()?.score.toString()
+  scoreText.innerText = 'Equipe ' + Game.getCurrentTeam()?.name + ' : ' + Game.getCurrentTeam()?.score.toString() + ' points'
   // scoreText.innerText = Game.currentScore().toString()
   
   // Remaining
@@ -50,8 +49,6 @@ export function setupStart(button: HTMLButtonElement) {
     
     updateTexts()
 
-    message.innerText = ''
-
     remainingGroup.hidden = false
     turnButtonsGroup.hidden = false
     startButton.disabled = true
@@ -81,7 +78,10 @@ export function setupResetGame (button: HTMLButtonElement) {
     turnButtonsGroup.hidden = true
     startButton.disabled = false
     pauseButton.disabled = true
-    resetButton.disabled = true
+    playButton.disabled = false
+    playButton.style.display = 'none'
+    resetButton.style.display = 'none'
+    playButton.style.display = 'none'
     pauseButton.style.display = 'inline'
     playButton.style.display = 'none'
     skipButton.style.display = 'none'
@@ -99,6 +99,7 @@ export function setupPlayTimer (button: HTMLButtonElement) {
     console.log('Resuming timer')
     Game.resume()
   
+    pauseButton.disabled = false
     pauseButton.style.display = 'inline'
     playButton.style.display = 'none'
   }
@@ -112,7 +113,12 @@ export function setupPauseTimer (button: HTMLButtonElement) {
   const pause = () => {
     console.log('Stopping timer')
     Game.pause()
+
+    updateTexts()
   
+    guessButton.disabled = true
+    skipButton.disabled = true
+    pauseButton.disabled = true
     pauseButton.style.display = 'none'
     playButton.style.display = 'inline'
   }
@@ -174,6 +180,8 @@ export function setupNextTeam (button: HTMLButtonElement) {
     
     updateTexts()
 
+    skipButton.style.display = 'default'
+    guessButton.style.display = 'default'
     nextTeamButton.style.display = 'none'
     nextRoundButton.style.display = 'none'
     resetButton.disabled = true
@@ -208,6 +216,8 @@ export function setupEndTimer (button: HTMLButtonElement) {
 
     startButton.disabled = true
     pauseButton.disabled = true
+    skipButton.style.display = 'none'
+    guessButton.style.display = 'none'
     nextTeamButton.style.display = 'inline'
     if (Game.isLastTeam()) {
       nextRoundButton.style.display = 'inline'
@@ -215,8 +225,6 @@ export function setupEndTimer (button: HTMLButtonElement) {
     } else {
       nextTeamButton.innerText = 'Equipe suivante'
     }
-    skipButton.style.display = 'none'
-    guessButton.style.display = 'none'
     resetButton.style.display = 'inline'
   }
   button.addEventListener('click', () => endTimer()) // TODO remove, Fake event

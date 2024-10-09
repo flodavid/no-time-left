@@ -7,13 +7,8 @@
     <title>Vite + TS</title>
   </head>
   <body>
-    <div id="app">
-      <img src="vite.svg" class="logo" alt="Vite logo" />
-      <img src="typescript.svg" class="logo vanilla" alt="TypeScript logo" />
+    <div class="header">
       <h1>Random word</h1>
-
-      <!--TimeSet-->
-      <!--Fin TimeSet-->
 
       <!-- Timer -->
       <div class="timer-container">
@@ -22,7 +17,9 @@
         <button id="play_btn" style="display: none;">Reprendre</button>
         <button id="stop_btn" style="display: none;">Stop</button>
       </div>
-      <!--Fin Timer-->
+    </div>
+    
+    <div id="app">
 
       <div class="card"></div>
         <div id="words_left" style="padding-bottom: 1.5em;" hidden>
@@ -37,12 +34,14 @@
         </div>
         <div>
         <p id="word">Prêts à commencer ?</p>
-        <button id="start_btn">Démarrer</button><button id="end_timer" type="button">TMP Fin timer</button>
       </div>
-      <div class="card">
+      <div class="card"></div>
+        <button id="start_btn">Démarrer</button>
         <button id="reset_words" type="button" style="display: none;">Réinitialiser</button>
         <button id="reset_btn" style="display: none;">Reset</button>
       </div>
+      
+      <button id="end_timer" type="button" style="position: absolute; top: 5px">SIMULATION Fin timer</button>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

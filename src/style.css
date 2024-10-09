@@ -31,20 +31,29 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 3.0em;
   line-height: 1.1;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/**********************/
+/*      HEADER        */
+/**********************/
+
+.header {
+  display: inline-table;
+  /* place-items: center; */
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  padding: 8px;
+  background: #1abc9c;
+    color: #e8e8e2;
   text-align: center;
 }
 
 .logo {
   height: 6em;
-  padding: 1.5em;
+  padding: 0.5em;
   will-change: filter;
   transition: filter 300ms;
 }
@@ -55,12 +64,23 @@ h1 {
   filter: drop-shadow(0 0 2em #3178c6aa);
 }
 
-.card {
-  padding: 2em;
+/***********************/
+/*          APP        */
+/***********************/
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
 }
 
-.read-the-docs {
-  color: #888;
+#word {
+  font-size: 20pt;
+}
+
+.card {
+  padding: 2em;
 }
 
 button {
