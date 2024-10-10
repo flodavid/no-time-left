@@ -1,10 +1,10 @@
 import { words } from './words.ts'
 import * as Utils from './utils.ts'
 import { Timer } from './timer.ts'
-import { loadScores, resetTeams, addPointToCurrentTeam } from './teams.ts';
+import { loadScores, resetTeams, addPointToCurrentTeam, resetRoundScores } from './teams.ts';
 export { getCurrentTeam, getCurrentTeamScore, goToNextTeam, isLastTeam } from './teams.ts';
 
-const GAME_WORDS_NUMBER : number = 10 // TODO replace by user input
+const GAME_WORDS_NUMBER : number = 15 // TODO replace by user input
 const timer = new Timer('timer');
 
 export enum Round {
@@ -39,7 +39,7 @@ function nextRandomWord () {
  */
 function readGameWords () {
   // If game words have not been initialized, get words from URL and store them
-  if (gameWords.length === 0) {
+  if (gameWords?.length === 0) {
     const url = new URL(window.location.href)
     const urlWords = url.searchParams.get('words')
     const storedWordList = urlWords !== null ? urlWords?.split('_') : []
@@ -126,13 +126,11 @@ export function resume () {
 export function endRound () {
   // Go to next round if it is not the last one
   ++round
-  gameWords = []
-  guessedWords = []
   if (round < Round.End) {
-    nextRandomWord()
+    readGameWords()
+    guessedWords = []
+    resetRoundScores()
   }
-
-  endRound()
 }
 
 

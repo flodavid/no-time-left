@@ -3,7 +3,7 @@ export class Timer {
     private interval: number | null;
     private seconds: number;
     private minutes: number;
-    private static INITIAL_TIME_SECONDS : number = 5 // TODO replace by user input
+    private static INITIAL_TIME_SECONDS : number = 30 // TODO replace by user input
     
     public onTimerEnd: Array<() => void>
 

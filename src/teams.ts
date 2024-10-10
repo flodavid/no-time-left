@@ -44,7 +44,6 @@ export function resetTeams () {
  * @returns the index of the player selected
  */
 export function endRound () {
-  current_team = 0
   resetRoundScores()
 }
 
@@ -66,7 +65,7 @@ export function getCurrentTeam () : Team|null {
 }
 
 export function isLastTeam () {
-  return current_team === teams.length
+  return current_team === teams.length -1
 }
 
 /*****************/
@@ -135,9 +134,10 @@ export function resetAll() {
 }
 
 /**
- * Only reset round nscores
+ * Only reset round scores and playing team
  */
 export function resetRoundScores() {
+  current_team = 0
   for (let team in teams) {
     teams[team].score = 0
   }
@@ -145,9 +145,8 @@ export function resetRoundScores() {
 
 /**
  * Reset round and party scores to 0
- * // TODO party scores
+ * // TODO total game scores
  */
 export function restart() {
   resetRoundScores()
-  current_team = 0
 }

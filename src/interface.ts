@@ -12,7 +12,9 @@ let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, playButton: 
 function updateTexts() {
   if (Game.randomWord != null) {
     if (Game.isTimerRunning()) {
-      message.innerText = 'Le mot est : ' + Game.randomWord
+      message.innerText = 'Faites deviner : ' + Game.randomWord
+      // Score
+      scoreText.innerText = 'Round ' + (Game.round + 1) + '. Equipe ' + Game.getCurrentTeam()?.name + ' : ' + Game.getCurrentTeam()?.score.toString() + ' points'
     } else {
       message.innerText = 'En attente des joueurs'
     }
@@ -20,9 +22,6 @@ function updateTexts() {
     message.innerText = 'Manche terminée'
     // TODO arrêter le tour (chrono, ...)
   }
-  // Score
-  scoreText.innerText = 'Equipe ' + Game.getCurrentTeam()?.name + ' : ' + Game.getCurrentTeam()?.score.toString() + ' points'
-  // scoreText.innerText = Game.currentScore().toString()
   
   // Remaining
   remainingText.innerText = Game.remainingWords().toString()
@@ -205,9 +204,13 @@ export function setupNextRound (button: HTMLButtonElement) {
   const nextRound = () => {
     Game.endRound()
     
+    // TODO include in updateTexts
     message.innerText = ''
+    scoreText.innerText = ''
     updateTexts()
-
+    
+    startButton.disabled = false
+    remainingGroup.hidden = true
     skipButton.style.display = 'none'
     guessButton.style.display = 'none'
     nextRoundButton.style.display = 'none'
@@ -220,8 +223,6 @@ export function setupNextRound (button: HTMLButtonElement) {
 export function setupEndTimer (button: HTMLButtonElement) {
   
   const endTimer = () => {
-    Game.pause() // TODO remove, Fake event
-
     message.innerText = 'Fin du temps !'
 
     startButton.disabled = true
@@ -237,7 +238,7 @@ export function setupEndTimer (button: HTMLButtonElement) {
     }
     resetButton.style.display = 'inline'
   }
-  button.addEventListener('click', () => endTimer()) // TODO remove, Fake event
+  button.addEventListener('click', () => {Game.pause(); endTimer()}) // TODO remove, Fake event
 
   Game.addEndTimerAction(endTimer)
 }
