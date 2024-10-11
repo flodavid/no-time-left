@@ -1,74 +1,53 @@
 import * as Game from './game.ts'
 
-let message: HTMLParagraphElement
-let scoreText: HTMLParagraphElement
-let remainingText: HTMLParagraphElement
-let remainingGroup: HTMLDivElement, turnButtonsGroup: HTMLDivElement
-let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, playButton: HTMLButtonElement,
+let instruction: HTMLParagraphElement
+let wordParagraph: HTMLParagraphElement
+let round: HTMLSpanElement, team: HTMLSpanElement, score: HTMLSpanElement, remainingNumber: HTMLSpanElement
+let scoreGroup: HTMLDivElement, remainingGroup: HTMLDivElement, turnButtonsGroup: HTMLDivElement
+let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, resumeButton: HTMLButtonElement,
     skipButton: HTMLButtonElement, guessButton: HTMLButtonElement,
     resetButton: HTMLButtonElement, nextRoundButton: HTMLButtonElement,
     nextTeamButton: HTMLButtonElement
 
-function updateTexts() {
-  if (Game.randomWord != null) {
-    if (Game.isTimerRunning()) {
-      message.innerText = 'Faites deviner : ' + Game.randomWord
-      // Score
-      scoreText.innerText = 'Round ' + (Game.round + 1) + '. Equipe ' + Game.getCurrentTeam()?.name + ' : ' + Game.getCurrentTeam()?.score.toString() + ' points'
-    } else {
-      message.innerText = 'En attente des joueurs'
-    }
-  } else {
-    message.innerText = 'Manche terminée'
-    // TODO arrêter le tour (chrono, ...)
-  }
-  
-  // Remaining
-  remainingText.innerText = Game.remainingWords().toString()
-}
-
-export function setupUserOutput(userScore: HTMLParagraphElement, wordsRemainingGroup: HTMLDivElement,
-                                wordsRemainingNumber: HTMLParagraphElement, word: HTMLParagraphElement) {
+/**
+ * 
+ * @param score_paragraph Text giving the current team score
+ * @param remaining_group Div containing the remaining time and words to guess
+ * @param words_remaining_number Number of words remaining
+ * @param message Instructions given to the players of what to do
+ * @param word Current word to guess
+ */
+export function setupUserOutput(score_group: HTMLDivElement,
+  round_number: HTMLSpanElement, team_number: HTMLSpanElement, score_number: HTMLParagraphElement,
+  remaining_group: HTMLDivElement, words_remaining_number: HTMLSpanElement,
+  message: HTMLParagraphElement, word: HTMLParagraphElement)
+{
   console.log('User output init')
-  scoreText = userScore
-  remainingGroup = wordsRemainingGroup
-  remainingText = wordsRemainingNumber
-  message = word
+  scoreGroup= score_group
+  round = round_number
+  team = team_number
+  score = score_number
+  remainingGroup = remaining_group
+  remainingNumber = words_remaining_number
+  instruction = message
+  wordParagraph = word
 }
 
-export function setupStart(button: HTMLButtonElement) {
-  console.log('start button setup')
-  startButton = button
+export function setupTimerButtons (
+    start_button: HTMLButtonElement,
+    pause_button: HTMLButtonElement,
+    resume_button: HTMLButtonElement)
+{
+  startButton = start_button
+  pauseButton = pause_button
+  resumeButton = resume_button
 
-  const start = () => {
-    console.log('(Re)Starting game')
-    
-    if (Game.hasWords()) {
-      resetButton.style.display = 'inline'
-    } else {
-      resetButton.style.display = 'none'
-    }
-
-    Game.startTurn()
-    
-    updateTexts()
-
-    remainingGroup.hidden = false
-    turnButtonsGroup.hidden = false
-    guessButton.disabled = false
-    skipButton.disabled = false
-    startButton.disabled = true
-    pauseButton.disabled = false
-    resetButton.disabled = false
-    skipButton.style.display = 'inline'
-    guessButton.style.display = 'inline'
-    nextTeamButton.style.display = 'none'
-  }
-  startButton.addEventListener('click', () => start())
+  startButton.addEventListener('click', () => doStartGame())
+  pauseButton.addEventListener('click', () => doPauseGame())
+  resumeButton.addEventListener('click', () => doResumeGame())
 }
 
 export function setupResetGame (button: HTMLButtonElement) {
-  console.log('reset game button setup')
   resetButton = button
 
   const reset = () => {
@@ -76,61 +55,31 @@ export function setupResetGame (button: HTMLButtonElement) {
 
     // Reset teams and scores
     Game.resetGame()
-    // Reset buttons
-    message.innerText ='Prêts à commencer'
+    
+    // Update texts to a new game state
+    instruction.innerText = 'Prêts à commencer ?'
     startButton.innerText = 'Relancer'
 
-    remainingGroup.hidden = true
-    turnButtonsGroup.hidden = true
-    startButton.disabled = false
-    pauseButton.disabled = true
-    playButton.disabled = false
-    playButton.style.display = 'none'
-    resetButton.style.display = 'none'
-    playButton.style.display = 'none'
-    pauseButton.style.display = 'inline'
-    playButton.style.display = 'none'
-    skipButton.style.display = 'none'
-    guessButton.style.display = 'none'
+    // Reset buttons
+    scoreGroup.style.visibility = 'hidden'
+    startButton.hidden = false
+    remainingGroup.style.visibility = 'hidden'
+    wordParagraph.style.visibility = 'hidden'
+    turnButtonsGroup.style.visibility = 'hidden'
+    pauseButton.hidden = true
+    pauseButton.style.visibility = 'visible'
+    resumeButton.hidden = true
+    skipButton.style.display = 'initial'
+    guessButton.style.display = 'initial'
     nextRoundButton.style.display = 'none'
-    nextTeamButton.style.display = 'none'
+    nextTeamButton.style.display = 'initial'
+    resetButton.style.visibility = "hidden"
   }
   button.addEventListener('click', () => reset())
-}
 
-export function setupResumeTimer (button: HTMLButtonElement) {
-  playButton = button
-
-  const play= () => {
-    console.log('Resuming timer')
-    Game.resume()
-
-    updateTexts()
-  
-    pauseButton.disabled = false
-    pauseButton.style.display = 'inline'
-    playButton.style.display = 'none'
+  if (!Game.hasWords()) {
+    resetButton.style.visibility = "hidden"
   }
-  button.addEventListener('click', () => play())
-}
-
-export function setupPauseTimer (button: HTMLButtonElement) {
-  console.log('stop timer setup')
-  pauseButton = button
-
-  const pause = () => {
-    console.log('Stopping timer')
-    Game.pause()
-
-    updateTexts()
-  
-    guessButton.disabled = true
-    skipButton.disabled = true
-    pauseButton.disabled = true
-    pauseButton.style.display = 'none'
-    playButton.style.display = 'inline'
-  }
-  button.addEventListener('click', () => pause())
 }
 
 export function setupTurnButtons(group: HTMLDivElement) {
@@ -161,7 +110,7 @@ export function setupGuessedWord(button: HTMLButtonElement) {
     updateTexts()
 
     if (!wordsRemaining) {
-      message.innerText = 'Fin du round'
+      instruction.innerText = 'Fin du round'
       skipButton.style.display = 'none'
       guessButton.style.display = 'none'
       nextRoundButton.style.display = 'inline'
@@ -175,7 +124,6 @@ export function setupGuessedWord(button: HTMLButtonElement) {
 }
 
 /**
- * @TODO 
  * @param button 
  */
 export function setupNextTeam (button: HTMLButtonElement) {
@@ -186,7 +134,7 @@ export function setupNextTeam (button: HTMLButtonElement) {
     
     updateTexts()
 
-    startButton.disabled = false
+    startButton.hidden = false
     skipButton.disabled = true
     guessButton.disabled = true
     skipButton.style.display = 'initial'
@@ -204,18 +152,15 @@ export function setupNextRound (button: HTMLButtonElement) {
   const nextRound = () => {
     Game.endRound()
     
-    // TODO include in updateTexts
-    message.innerText = ''
-    scoreText.innerText = ''
     updateTexts()
     
-    startButton.disabled = false
+    startButton.hidden = false
     remainingGroup.hidden = true
     skipButton.style.display = 'none'
     guessButton.style.display = 'none'
     nextRoundButton.style.display = 'none'
     nextTeamButton.style.display = 'none'
-    resetButton.style.display = 'inline'
+    resetButton.style.visibility = "visible"
   }
   button.addEventListener('click', () => nextRound())
 }
@@ -223,10 +168,14 @@ export function setupNextRound (button: HTMLButtonElement) {
 export function setupEndTimer (button: HTMLButtonElement) {
   
   const endTimer = () => {
-    message.innerText = 'Fin du temps !'
+    console.log("end of timer")
+    // updateTexts()
+    instruction.innerText = 'Fin du temps !'
 
-    startButton.disabled = true
-    pauseButton.disabled = true
+    wordParagraph.style.visibility = "hidden"
+    startButton.hidden = true
+    // The pause button should disappear, but still leave an empty space
+    pauseButton.style.visibility = 'hidden'
     skipButton.style.display = 'none'
     guessButton.style.display = 'none'
     nextTeamButton.style.display = 'inline'
@@ -236,9 +185,86 @@ export function setupEndTimer (button: HTMLButtonElement) {
     } else {
       nextTeamButton.innerText = 'Equipe suivante'
     }
-    resetButton.style.display = 'inline'
+    resetButton.style.visibility = "visible"
   }
-  button.addEventListener('click', () => {Game.pause(); endTimer()}) // TODO remove, Fake event
+  button.addEventListener('click', () => {Game.reset(); endTimer()}) // TODO remove, Fake event
 
   Game.addEndTimerAction(endTimer)
+}
+
+function updateTexts() {
+
+    // // TODO include in updateTexts
+    // instruction.innerText = ''
+    // scoreText.innerText = ''
+
+  if (Game.randomWord != null) {
+    if (Game.isTimerRunning()) {
+      if (Game.round === Game.Round.Word) instruction.innerText = 'Faites deviner en décrivant :'
+      else if (Game.round === Game.Round.Description) instruction.innerText = 'Faites deviner avec un seul mot :'
+      else if (Game.round === Game.Round.Signs) instruction.innerText = 'Faites deviner en mimant :'
+      else instruction.innerText = 'Partie terminée'
+      
+      wordParagraph.innerText = Game.randomWord
+      wordParagraph.style.visibility = "visible"
+      // Score
+      round.innerText = (Game.round + 1).toString()
+      var currentTeam = Game.getCurrentTeam()
+      team.innerText = currentTeam ? currentTeam.name : 'inconnue'
+      score.innerText = currentTeam ? currentTeam.score.toString() : '0'
+    } else {
+      instruction.innerText = 'En attente des joueurs'
+      wordParagraph.style.visibility = "hidden"
+    }
+  } else {
+    instruction.innerText = 'Manche terminée'
+  }
+  
+  // Remaining
+  remainingNumber.innerText = Game.remainingWords().toString()
+}
+
+function doStartGame() {
+  console.log('(Re)Starting game')
+
+  Game.startTurn()
+  
+  updateTexts()
+  
+  startButton.hidden = true
+  scoreGroup.style.visibility = 'visible'
+  remainingGroup.style.visibility = 'visible'
+  turnButtonsGroup.style.visibility = 'visible'
+  guessButton.disabled = false
+  skipButton.disabled = false
+  pauseButton.hidden = false
+  resetButton.disabled = false
+  skipButton.style.display = 'inline'
+  guessButton.style.display = 'inline'
+  nextTeamButton.style.display = 'none'
+}
+
+function doPauseGame () {
+  console.log('Stopping timer')
+  Game.pause()
+
+  updateTexts()
+
+  guessButton.disabled = true
+  skipButton.disabled = true
+  pauseButton.hidden = true
+  resumeButton.hidden = false
+  resetButton.style.visibility = "visible"
+}
+
+function doResumeGame () {
+  console.log('Resuming timer')
+  Game.resume()
+
+  updateTexts()
+  
+  guessButton.disabled = false
+  skipButton.disabled = false
+  pauseButton.hidden = false
+  resumeButton.hidden = true
 }

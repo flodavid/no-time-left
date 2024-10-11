@@ -28,6 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  line-height: 0.9;
 }
 
 h1 {
@@ -49,12 +50,12 @@ h1 {
   width: 100%;
   padding: 8px;
   background: #1abc9c;
-    color: #e8e8e2;
+  color: #fbfbed;
   text-align: center;
 }
 
 .logo {
-  height: 6em;
+  height: 4em;
   padding: 1em;
   will-change: filter;
   transition: filter 300ms;
@@ -72,17 +73,23 @@ h1 {
 
 #app {
   max-width: 1280px;
-  margin: 0 auto;
+  margin: 200px auto;
   padding: 1rem;
   text-align: center;
 }
 
+#instruction {
+  font-size: 16pt;
+}
+
 #word {
-  font-size: 20pt;
+  font-size: 21pt;
+  font-weight: bold;
 }
 
 .card {
-  padding: 2em;
+  padding-top: 1.6em;
+  margin: 1.2em;
 }
 
 button {

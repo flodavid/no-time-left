@@ -8,32 +8,42 @@
   </head>
   <body>
     <div class="header">
-      <h1>Random word</h1>
+      <h1>Pas l'time</h1>
       <img src="vite.svg" class="logo" alt="Vite logo" style="transform: rotate(180deg);"/>
     </div> 
     <div id="app">
 
-      <div class="card"></div>
-        <div id="words_and_time_left" style="padding-bottom: 1rem;" hidden>
-          <span>Reste </span><span id="remaining">0</span><span> mots</span>
-          <h2 id="timer">00:00</h2>
+      <div class="card">
+        <div id="score_group" style="visibility: hidden;">
+          <p>Manche <span id="round"></span></p>
+          <p>Equipe <span id="team"></span> : <span id="score"></span> points</p>
         </div>
-        <p id="score"></p>
-        <div id="turn_buttons" hidden>
-          <button id="skip_word" type="button">Passer le mot</button>        
+      </div>
+        
+      <div class="card">
+        <div>
+          <p id="instruction">Prêts à commencer ?</p>
+          <p id="word"></p>
+        </div>
+        <div id="turn_buttons" style="visibility: hidden;">
+          <button id="skip_word" type="button">Passer le mot</button>
           <button id="guessed_word" type="button">Deviné</button>
           <button id="next_team" type="button" style="display: none;">Equipe suivante</button>
           <button id="next_round" type="button" style="display: none;">Manche suivante</button>
         </div>
-        <div>
-        <p id="word">Prêts à commencer ?</p>
+        <button id="start">Démarrer</button> 
       </div>
-      <div class="card"></div>
-        <button id="start">Démarrer</button>
-        <button id="pause" disabled>Pause</button>
-        <button id="resume" style="display: none;">Reprendre</button>
-        <button id="reset_words" type="button" style="display: none;">Réinitialiser</button>
-        <button id="reset" style="display: none;">Reset</button>
+      <div class="card">
+        <!-- TOOD separate start button -->
+        <div id="words_and_time_left" style="visibility: hidden;">
+          <span>Reste </span><span id="remaining">0</span><span> mots</span>
+          <h2 id="timer">00:00</h2>
+        </div>
+        <button id="pause" hidden>Pause</button>
+        <button id="resume" hidden>Reprendre</button>
+        <div class="card">
+          <button id="reset_game" type="button">Réinitialiser</button>
+        </div>
       </div>
       
       <button id="end_timer" type="button" style="font-size: 4px; position: absolute; top: 5px">SIMULATION Fin timer</button>

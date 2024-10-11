@@ -24,36 +24,6 @@ export let guessedWords: string[] = []
 /*    Actions     */
 /******************/
 
-function nextRandomWord () {
-  readGameWords()
-  if (gameWords.length + guessedWords.length < GAME_WORDS_NUMBER) {
-    randomWord = words[Utils.getRandomInt(words.length)]
-    Utils.addToWordsQueryStringParameter(randomWord)
-  } else {
-    randomWord = gameWords.shift()
-  }
-}
-
-/**
- * Read the gamewords from the URL and add them to the game if there are none yet
- */
-function readGameWords () {
-  // If game words have not been initialized, get words from URL and store them
-  if (gameWords?.length === 0) {
-    const url = new URL(window.location.href)
-    const urlWords = url.searchParams.get('words')
-    const storedWordList = urlWords !== null ? urlWords?.split('_') : []
-    for (const word of storedWordList) {
-      if (gameWords.length === GAME_WORDS_NUMBER) break
-      gameWords.push(Utils.reverseString(decodeURIComponent(word)))
-    }
-    Utils.shuffleArray(gameWords)
-    
-  }
-
-  if (gameWords === null) gameWords = []
-}
-
 /**
  * Update the score, the words remaining, and get a new random word if needed
  * @returns true if there are remaining words to guess
@@ -113,11 +83,19 @@ export function pause () {
   timer.stop()
 }
 
+
+/**
+ * Reset timer. TODO remove, used for fake end timer
+ */
+export function reset () {
+  timer.reset()
+}
+
 /**
  * Pause the current turn
  */
 export function resume () {
-  timer.start()
+  timer.resume()
 }
 
 /**
@@ -138,9 +116,9 @@ export function endRound () {
  * Set the game to its initial state
  */
 export function initGame () {
+  readGameWords()
   loadScores()
   resetTeams()
-  gameWords = []
   guessedWords = []
   round = Round.Description
   randomWord = ''
@@ -196,4 +174,39 @@ export function remainingWords () : number {
 
 export function isTimerRunning () : boolean {
   return timer.isRunning()
+}
+
+
+/******************/
+/*      Utils     */
+/******************/
+
+/**
+ * Read the gamewords from the URL and add them to the game if there are none yet
+ */
+function readGameWords () {
+  // If game words have not been initialized, get words from URL and store them
+  if (gameWords?.length === 0) {
+    const url = new URL(window.location.href)
+    const urlWords = url.searchParams.get('words')
+    const storedWordList = urlWords !== null ? urlWords?.split('_') : []
+    for (const word of storedWordList) {
+      if (gameWords.length === GAME_WORDS_NUMBER) break
+      gameWords.push(Utils.reverseString(decodeURIComponent(word)))
+    }
+    Utils.shuffleArray(gameWords)
+    
+  }
+
+  if (gameWords === null) gameWords = []
+}
+
+function nextRandomWord () {
+  if (gameWords === null) gameWords = []
+  if (gameWords.length + guessedWords.length < GAME_WORDS_NUMBER) {
+    randomWord = words[Utils.getRandomInt(words.length)]
+    Utils.addToWordsQueryStringParameter(randomWord)
+  } else {
+    randomWord = gameWords.shift()
+  }
 }
