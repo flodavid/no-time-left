@@ -1,10 +1,12 @@
 
 export class Team {
     public name: string
-    public score: number
+    public totalScore: number
+    public roundScore: number
     
     constructor(teamName: string, teamScore : number = 0) {
         this.name = teamName
-        this.score = teamScore
+        this.totalScore = teamScore
+        this.roundScore = 0
     }
 }

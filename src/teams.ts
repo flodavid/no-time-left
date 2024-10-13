@@ -44,7 +44,7 @@ export function resetTeams () {
  * @returns the index of the player selected
  */
 export function endRound () {
-  resetRoundScores()
+  storeRoundScores()
 }
 
 // /**
@@ -64,7 +64,11 @@ export function getCurrentTeam () : Team|null {
   return teams[current_team]
 }
 
-export function isLastTeam () {
+export function getTeams () : Array<Team> {
+  return teams
+}
+
+export function isLastTeam () : boolean{
   return current_team === teams.length -1
 }
 
@@ -78,18 +82,9 @@ export function isLastTeam () {
  */
 export function addPointToCurrentTeam () : number {
   console.log('Adding a point to player', current_team)
-  teams[current_team].score ++
+  teams[current_team].roundScore ++
   // TODO save to query params
-  return teams[current_team].score
-}
-
-/**
- * Get the current player score
- * @returns the score of the player
- */
-export function getCurrentTeamScore () : number {
-  if (current_team == 0) return 0
-  return teams[current_team].score
+  return teams[current_team].roundScore
 }
 
 function getCurrentTeams() : Array<string>|null {
@@ -136,10 +131,11 @@ export function resetAll() {
 /**
  * Only reset round scores and playing team
  */
-export function resetRoundScores() {
+export function storeRoundScores() {
   current_team = 0
   for (let team in teams) {
-    teams[team].score = 0
+    teams[team].totalScore += teams[team].roundScore
+    teams[team].roundScore = 0
   }
 }
 
@@ -148,5 +144,5 @@ export function resetRoundScores() {
  * // TODO total game scores
  */
 export function restart() {
-  resetRoundScores()
+  storeRoundScores()
 }

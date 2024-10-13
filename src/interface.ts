@@ -156,8 +156,6 @@ export function setupNextRound (button: HTMLButtonElement) {
     
     startButton.hidden = false
     remainingGroup.hidden = true
-    skipButton.style.display = 'none'
-    guessButton.style.display = 'none'
     nextRoundButton.style.display = 'none'
     nextTeamButton.style.display = 'none'
     resetButton.style.visibility = "visible"
@@ -178,12 +176,24 @@ export function setupEndTimer (button: HTMLButtonElement) {
     pauseButton.style.visibility = 'hidden'
     skipButton.style.display = 'none'
     guessButton.style.display = 'none'
-    nextTeamButton.style.display = 'inline'
-    if (Game.isLastTeam()) {
-      nextRoundButton.style.display = 'inline'
-      nextTeamButton.innerText = 'Ajouter une équipe'
+
+    if (Game.round < Game.Round.End - 1) {
+      // Not last round
+      nextTeamButton.style.display = 'inline'
+
+      if (Game.isLastTeam()) {
+        nextRoundButton.style.display = 'inline'
+        nextTeamButton.innerText = 'Ajouter une équipe'
+      } else {
+        nextTeamButton.innerText = 'Equipe suivante'
+      }
     } else {
-      nextTeamButton.innerText = 'Equipe suivante'
+      /* End of game screen */
+      instruction.innerText = 'Partie terminée\n'
+      // Printing scores. TODO improve it
+      Game.getTeams().forEach(team => {
+        instruction.innerText += '\n Equipe ' + team.name + ' : ' + team.totalScore + ' points'
+      })
     }
     resetButton.style.visibility = "visible"
   }
@@ -193,31 +203,27 @@ export function setupEndTimer (button: HTMLButtonElement) {
 }
 
 function updateTexts() {
+  // Display score and round
+  round.innerText = (Game.round + 1).toString()
 
-    // // TODO include in updateTexts
-    // instruction.innerText = ''
-    // scoreText.innerText = ''
+  if (Game.round === Game.Round.Description) instruction.innerText = 'Faites deviner en décrivant :'
+  else if (Game.round === Game.Round.Word) instruction.innerText = 'Faites deviner avec un seul mot :'
+  else if (Game.round === Game.Round.Signs) instruction.innerText = 'Faites deviner en mimant :'
 
   if (Game.randomWord != null) {
     if (Game.isTimerRunning()) {
-      if (Game.round === Game.Round.Word) instruction.innerText = 'Faites deviner en décrivant :'
-      else if (Game.round === Game.Round.Description) instruction.innerText = 'Faites deviner avec un seul mot :'
-      else if (Game.round === Game.Round.Signs) instruction.innerText = 'Faites deviner en mimant :'
-      else instruction.innerText = 'Partie terminée'
-      
       wordParagraph.innerText = Game.randomWord
       wordParagraph.style.visibility = "visible"
       // Score
-      round.innerText = (Game.round + 1).toString()
       var currentTeam = Game.getCurrentTeam()
       team.innerText = currentTeam ? currentTeam.name : 'inconnue'
-      score.innerText = currentTeam ? currentTeam.score.toString() : '0'
+      score.innerText = currentTeam ? currentTeam.roundScore.toString() : '0'
     } else {
       instruction.innerText = 'En attente des joueurs'
       wordParagraph.style.visibility = "hidden"
     }
   } else {
-    instruction.innerText = 'Manche terminée'
+    instruction.innerText = 'En attente'
   }
   
   // Remaining

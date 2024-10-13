@@ -28,7 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  line-height: 0.9;
+  line-height: 1.0;
 }
 
 h1 {

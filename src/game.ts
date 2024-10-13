@@ -1,8 +1,8 @@
 import { words } from './words.ts'
 import * as Utils from './utils.ts'
 import { Timer } from './timer.ts'
-import { loadScores, resetTeams, addPointToCurrentTeam, resetRoundScores } from './teams.ts';
-export { getCurrentTeam, getCurrentTeamScore, goToNextTeam, isLastTeam } from './teams.ts';
+import { loadScores, resetTeams, addPointToCurrentTeam, storeRoundScores } from './teams.ts';
+export { getCurrentTeam, goToNextTeam, getTeams, isLastTeam } from './teams.ts';
 
 const GAME_WORDS_NUMBER : number = 15 // TODO replace by user input
 const timer = new Timer('timer');
@@ -72,7 +72,7 @@ export function startTurn () {
     setGameEndTimerAction()
     
   } else {
-    console.error('END OF GAME == NOT IMPLEMENTED') // TODO add end of game actions (show scores)
+    console.error('END OF GAME ===== NOT IMPLEMENTED') // TODO add end of game actions (show scores)
   }
 }
 
@@ -102,12 +102,12 @@ export function resume () {
  * End the round, intialize a new one if necessary
  */
 export function endRound () {
+  storeRoundScores()
   // Go to next round if it is not the last one
   ++round
   if (round < Round.End) {
     readGameWords()
     guessedWords = []
-    resetRoundScores()
   }
 }
 
