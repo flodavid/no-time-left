@@ -46,6 +46,12 @@ export class Timer {
         this.updateDisplay();
     }
 
+    public forceEnd(): void {
+        this.seconds = 1;
+        this.minutes = 0;
+        this.updateTimer();
+    }
+
     public isRunning(): boolean {
         return this.interval !== null
     }
@@ -54,12 +60,12 @@ export class Timer {
         --this.seconds;
         if (this.seconds === 60) {
             this.seconds = 0;
-            this.minutes++;
+            --this.minutes;
         }
         this.updateDisplay();
         
         // End timer event
-        if ( this.seconds <= 0) {
+        if (this.minutes === 0 && this.seconds <= 0) {
             this.stop()
 
             for (var timerEndMethod of this.onTimerEnd) {

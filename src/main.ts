@@ -10,7 +10,7 @@ const score = document.querySelector<HTMLParagraphElement>('#score')!
 const instruction = document.querySelector<HTMLParagraphElement>('#instruction')!
 const word = document.querySelector<HTMLParagraphElement>('#word')!
 
-const remainingGroup = document.querySelector<HTMLDivElement>('#words_and_time_left')!
+const timeGroup = document.querySelector<HTMLDivElement>('#time_management')!
 const remainingNumber = document.querySelector<HTMLSpanElement>('#remaining')!
 const start = document.querySelector<HTMLButtonElement>('#start')!
 const pause = document.querySelector<HTMLButtonElement>('#pause')!
@@ -29,7 +29,7 @@ const endTimer = document.querySelector<HTMLButtonElement>('#end_timer')!
 
 Game.initGame()
 
-Interface.setupUserOutput(scoreGroup, round, team, score, remainingGroup, remainingNumber,
+Interface.setupUserOutput(scoreGroup, round, team, score, timeGroup, remainingNumber,
     instruction, word)
 Interface.setupTimerButtons(start, pause, resume)
 
@@ -40,5 +40,5 @@ Interface.setupNextTeam(nextTeam)
 Interface.setupNextRound(nextRound)
 
 Interface.setupResetGame(resetGame)
-Interface.setupEndTimer(endTimer)
 
+Interface.setupFakeEndTimer(endTimer)

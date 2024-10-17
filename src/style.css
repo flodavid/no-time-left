@@ -26,16 +26,15 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 220px;
   min-height: 100vh;
   line-height: 1.0;
 }
 
 h1 {
-  font-size: 3.0em;
-  line-height: 1;
-  margin-top: 44px;
-  margin-bottom: 20px;
+  font-size: 28pt;
+  margin-top: 10px;
+  margin-bottom: 4px;
 }
 
 /**********************/
@@ -52,16 +51,17 @@ h1 {
   background: #1abc9c;
   color: #fbfbed;
   text-align: center;
+  will-change: filter;
+  transition: filter 200ms;
+}
+.header:hover {
+  color: #ecece4;
+  filter: drop-shadow(0 0 1em #646cffaa);
 }
 
 .logo {
-  height: 4em;
+  height: 5em;
   padding: 1em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.vanilla:hover {
   filter: drop-shadow(0 0 2em #3178c6aa);
@@ -73,8 +73,7 @@ h1 {
 
 #app {
   max-width: 1280px;
-  margin: 200px auto;
-  padding: 1rem;
+  margin: 110px auto 0px;
   text-align: center;
 }
 
@@ -94,6 +93,7 @@ h1 {
 
 button {
   border-radius: 8px;
+  margin-bottom: 6px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;

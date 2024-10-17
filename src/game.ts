@@ -1,4 +1,4 @@
-import { words } from './words.ts'
+import { words, expressions } from './words.ts'
 import * as Utils from './utils.ts'
 import { Timer } from './timer.ts'
 import { loadScores, resetTeams, addPointToCurrentTeam, storeRoundScores } from './teams.ts';
@@ -28,13 +28,17 @@ export let guessedWords: string[] = []
  * Update the score, the words remaining, and get a new random word if needed
  * @returns true if there are remaining words to guess
  */
-export function wordFound (): boolean {
+export function wordFound () {
   if (randomWord) guessedWords.push(randomWord)
 
   addPointToCurrentTeam()
-  nextRandomWord()
 
-  return guessedWords.length < GAME_WORDS_NUMBER
+  if (guessedWords.length >= GAME_WORDS_NUMBER) {
+    randomWord = undefined
+    timer.forceEnd()
+  } else {
+    nextRandomWord()
+  }
 }
 
 /**
@@ -164,8 +168,8 @@ export function resetGame () {
 // }
 
 export function hasWords () : boolean {
-  if (gameWords !== null) return gameWords.length > 0
-  else return false
+  if (randomWord) return true
+  else return gameWords !== null && gameWords.length > 0
 }
 
 export function remainingWords () : number {
@@ -204,7 +208,7 @@ function readGameWords () {
 function nextRandomWord () {
   if (gameWords === null) gameWords = []
   if (gameWords.length + guessedWords.length < GAME_WORDS_NUMBER) {
-    randomWord = words[Utils.getRandomInt(words.length)]
+    randomWord = words.concat(expressions)[Utils.getRandomInt(words.length + expressions.length)]
     Utils.addToWordsQueryStringParameter(randomWord)
   } else {
     randomWord = gameWords.shift()

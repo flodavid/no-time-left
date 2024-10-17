@@ -81,7 +81,7 @@ export function isLastTeam () : boolean{
  * @returns the score of the player after adding the point
  */
 export function addPointToCurrentTeam () : number {
-  console.log('Adding a point to player', current_team)
+  console.log('Adding a point to team', current_team)
   teams[current_team].roundScore ++
   // TODO save to query params
   return teams[current_team].roundScore
