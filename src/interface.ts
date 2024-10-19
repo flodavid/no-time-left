@@ -251,15 +251,17 @@ function doEndTimer () {
   skipButton.style.display = 'none'
   guessButton.style.display = 'none'
 
-  if (Game.round < Game.Round.End - 1) {
-    // Not last round
+  if (Game.hasWords()) {
     nextTeamButton.style.display = 'inline'
-
     if (Game.isLastTeam()) {
-      nextRoundButton.style.display = 'inline'
       nextTeamButton.innerText = 'Ajouter une équipe'
     } else {
       nextTeamButton.innerText = 'Equipe suivante'
+    }
+  } else {
+    if (Game.round < Game.Round.End - 1) {
+      // Not last round
+      nextRoundButton.style.display = 'inline'
     }
   }
   resetButton.style.visibility = "visible"
