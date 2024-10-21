@@ -7,7 +7,7 @@ let scoreGroup: HTMLDivElement, timeGroup: HTMLDivElement, turnButtonsGroup: HTM
 let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, resumeButton: HTMLButtonElement,
     skipButton: HTMLButtonElement, guessButton: HTMLButtonElement,
     resetButton: HTMLButtonElement, nextRoundButton: HTMLButtonElement,
-    nextTeamButton: HTMLButtonElement
+    nextTeamButton: HTMLButtonElement, addTeamButton: HTMLButtonElement
 
 /**
  * 
@@ -85,68 +85,69 @@ export function setupResetGame (button: HTMLButtonElement) {
   }
 }
 
-export function setupTurnButtons(group: HTMLDivElement) {
+export function setupTurnButtons(group: HTMLDivElement,
+                                 skip_button: HTMLButtonElement, guess_button: HTMLButtonElement,
+                                 next_team_button: HTMLButtonElement, add_team_button: HTMLButtonElement,
+                                 next_round_button: HTMLButtonElement)
+{
   turnButtonsGroup = group
+  skipButton = skip_button
+  guessButton = guess_button
+  nextTeamButton = next_team_button
+  addTeamButton = add_team_button
+  nextRoundButton = next_round_button
+
+  skipButton.addEventListener('click', () => doSkipWord())
+  guessButton.addEventListener('click', () => doGuessedWord())
+  nextTeamButton.addEventListener('click', () => doNextTeam())
+  addTeamButton.addEventListener('click', () => doAddTeam())
+  nextRoundButton.addEventListener('click', () => doNextRound())
 }
 
-export function setupSkipWord(button: HTMLButtonElement) {
-  skipButton = button
-
-  const skipWord = () => {
-    Game.wordNotFound()
-    updateTexts()
-  }
-  button.addEventListener('click', () => skipWord())
+function doSkipWord () {
+  Game.wordNotFound()
+  updateTexts()
 }
 
-export function setupGuessedWord(button: HTMLButtonElement) {
-  guessButton = button
-
-  const guessedWord = () => {
-    Game.wordFound()
-    updateTexts()
-  }
-  guessButton.addEventListener('click', () => guessedWord())
+const doGuessedWord = () => {
+  Game.wordFound()
+  updateTexts()
 }
 
-/**
- * @param button 
- */
-export function setupNextTeam (button: HTMLButtonElement) {
-  nextTeamButton = button
-
-  const nextTeam = () => {
-    Game.goToNextTeam()
-    
-    updateTexts()
-
-    startButton.hidden = false
-    skipButton.disabled = true
-    guessButton.disabled = true
-    skipButton.style.display = 'initial'
-    guessButton.style.display = 'initial'
-    nextTeamButton.style.display = 'none'
-    nextRoundButton.style.display = 'none'
-    resetButton.style.visibility = 'hidden'
-  }
-  button.addEventListener('click', () => nextTeam())
+function doNextTeam () {
+  Game.goToNextTeam()  
+  nextTeamClicked()
 }
 
-export function setupNextRound (button: HTMLButtonElement) {
-  nextRoundButton = button
+function doAddTeam () {
+  Game.addTeam()  
+  nextTeamClicked()
+}
 
-  const nextRound = () => {
-    Game.endRound()
-    
-    updateTexts()
-    
-    startButton.hidden = false
-    timeGroup.hidden = true
-    nextRoundButton.style.display = 'none'
-    nextTeamButton.style.display = 'none'
-    resetButton.style.visibility = "visible"
-  }
-  button.addEventListener('click', () => nextRound())
+function nextTeamClicked () {
+  updateTexts()
+
+  startButton.hidden = false
+  skipButton.disabled = true
+  guessButton.disabled = true
+  skipButton.style.display = 'initial'
+  guessButton.style.display = 'initial'
+  nextTeamButton.style.display = 'none'
+  addTeamButton.style.display = 'none'
+  nextRoundButton.style.display = 'none'
+  resetButton.style.visibility = 'hidden'
+}
+
+function doNextRound () {
+  Game.endRound()
+  
+  updateTexts()
+  
+  startButton.hidden = false
+  timeGroup.hidden = true
+  nextRoundButton.style.display = 'none'
+  nextTeamButton.style.display = 'none'
+  resetButton.style.visibility = "visible"
 }
 
 export function setupFakeEndTimer (button: HTMLButtonElement) {
@@ -211,6 +212,7 @@ function doStartGame() {
   skipButton.style.display = 'inline'
   guessButton.style.display = 'inline'
   nextTeamButton.style.display = 'none'
+  addTeamButton.style.display = 'none'
 }
 
 function doPauseGame () {
@@ -254,9 +256,7 @@ function doEndTimer () {
   if (Game.hasWords()) {
     nextTeamButton.style.display = 'inline'
     if (Game.isLastTeam()) {
-      nextTeamButton.innerText = 'Ajouter une équipe'
-    } else {
-      nextTeamButton.innerText = 'Equipe suivante'
+      addTeamButton.style.display = 'inline'
     }
   } else {
     if (Game.round < Game.Round.End - 1) {

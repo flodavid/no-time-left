@@ -2,7 +2,7 @@ import { words, expressions } from './words.ts'
 import * as Utils from './utils.ts'
 import { Timer } from './timer.ts'
 import { loadScores, resetTeams, addPointToCurrentTeam, storeRoundScores } from './teams.ts';
-export { getCurrentTeam, goToNextTeam, getTeams, isLastTeam } from './teams.ts';
+export { getCurrentTeam, addTeam, goToNextTeam, getTeams, isLastTeam } from './teams.ts';
 
 const GAME_WORDS_NUMBER : number = 15 // TODO replace by user input
 const timer = new Timer('timer');

@@ -2,6 +2,9 @@ import './style.css'
 import * as Game from './game.ts'
 import * as Interface from './interface.ts'
 
+const header = document.querySelector<HTMLLinkElement>('#header')!
+header.href = window.location.pathname
+
 const scoreGroup = document.querySelector<HTMLDivElement>('#score_group')!
 const round = document.querySelector<HTMLParagraphElement>('#round')!
 const team = document.querySelector<HTMLParagraphElement>('#team')!
@@ -20,6 +23,7 @@ const turnButtonsGroup = document.querySelector<HTMLDivElement>('#turn_buttons')
 const skipWord = document.querySelector<HTMLButtonElement>('#skip_word')!
 const guessedWord = document.querySelector<HTMLButtonElement>('#guessed_word')!
 const nextTeam = document.querySelector<HTMLButtonElement>('#next_team')!
+const addTeam = document.querySelector<HTMLButtonElement>('#add_team')!
 const nextRound = document.querySelector<HTMLButtonElement>('#next_round')!
 
 const resetGame = document.querySelector<HTMLButtonElement>('#reset_game')!
@@ -33,11 +37,7 @@ Interface.setupUserOutput(scoreGroup, round, team, score, timeGroup, remainingNu
     instruction, word)
 Interface.setupTimerButtons(start, pause, resume)
 
-Interface.setupTurnButtons(turnButtonsGroup)
-Interface.setupSkipWord(skipWord)
-Interface.setupGuessedWord(guessedWord)
-Interface.setupNextTeam(nextTeam)
-Interface.setupNextRound(nextRound)
+Interface.setupTurnButtons(turnButtonsGroup, skipWord, guessedWord, nextTeam, addTeam, nextRound)
 
 Interface.setupResetGame(resetGame)
 
