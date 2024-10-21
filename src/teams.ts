@@ -12,7 +12,7 @@ let current_team = 0
  * Add a player to the game
  * @returns the score of the player after adding the point
  */
-function addTeam () {
+export function addTeam () {
   console.log('Adding a team')
   teams.push(new Team((teams.length + 1).toString()))
   console.log('Total is', teams.length, 'players')
@@ -25,7 +25,7 @@ function addTeam () {
 export function goToNextTeam () {
   ++current_team
   if (current_team > teams.length - 1) {
-    addTeam()
+    current_team = 0
   }
 }
 
@@ -36,7 +36,7 @@ export function resetTeams () {
   console.log('Resetting teams')
   teams = []
   current_team = -1
-  goToNextTeam()
+  addTeam()
 }
 
 /**

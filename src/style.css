@@ -41,7 +41,7 @@ h1 {
 /*      HEADER        */
 /**********************/
 
-.header {
+#header {
   display: inline-table;
   /* place-items: center; */
   position: fixed;
@@ -54,7 +54,7 @@ h1 {
   will-change: filter;
   transition: filter 200ms;
 }
-.header:hover {
+#header:hover {
   color: #ecece4;
   filter: drop-shadow(0 0 1em #646cffaa);
 }
@@ -73,7 +73,7 @@ h1 {
 
 #app {
   max-width: 1280px;
-  margin: 110px auto 0px;
+  margin: 130px auto 0px;
   text-align: center;
 }
 
