@@ -22,8 +22,10 @@ const resume = document.querySelector<HTMLButtonElement>('#resume')!
 const turnButtonsGroup = document.querySelector<HTMLDivElement>('#turn_buttons')!
 const skipWord = document.querySelector<HTMLButtonElement>('#skip_word')!
 const guessedWord = document.querySelector<HTMLButtonElement>('#guessed_word')!
+
 const nextTeam = document.querySelector<HTMLButtonElement>('#next_team')!
 const addTeam = document.querySelector<HTMLButtonElement>('#add_team')!
+const addTeamAndNextRound = document.querySelector<HTMLButtonElement>('#add_team_next_round')!
 const nextRound = document.querySelector<HTMLButtonElement>('#next_round')!
 
 const resetGame = document.querySelector<HTMLButtonElement>('#reset_game')!
@@ -36,9 +38,7 @@ Game.initGame()
 Interface.setupUserOutput(scoreGroup, round, team, score, timeGroup, remainingNumber,
     instruction, word)
 Interface.setupTimerButtons(start, pause, resume)
-
-Interface.setupTurnButtons(turnButtonsGroup, skipWord, guessedWord, nextTeam, addTeam, nextRound)
-
+Interface.setupTurnButtons(turnButtonsGroup, skipWord, guessedWord, nextTeam, addTeam, addTeamAndNextRound, nextRound)
 Interface.setupResetGame(resetGame)
 
 Interface.setupFakeEndTimer(endTimer)

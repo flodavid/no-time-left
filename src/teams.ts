@@ -35,8 +35,8 @@ export function goToNextTeam () {
 export function resetTeams () {
   console.log('Resetting teams')
   teams = []
-  current_team = -1
   addTeam()
+  current_team = 0
 }
 
 /**
@@ -46,14 +46,6 @@ export function resetTeams () {
 export function endRound () {
   storeRoundScores()
 }
-
-// /**
-//  * Get the current player name
-//  * @returns the index of the player
-//  */
-// export function getCurrentTeam () : Team {
-//   return teams[CURRENT_TEAM]
-// }
 
 /**
  * Get the current player name
@@ -87,7 +79,7 @@ export function addPointToCurrentTeam () : number {
   return teams[current_team].roundScore
 }
 
-function getCurrentTeams() : Array<string>|null {
+function getCurrentTeams () : Array<string>|null {
   const url = new URL(window.location.href)
   const teams = url.searchParams.getAll('p')
   return teams
@@ -99,7 +91,6 @@ function getCurrentTeams() : Array<string>|null {
 export function loadScores () {
   console.log('reading scores from URL')
   teams = []
-  current_team = 0
 
   const teamsString = getCurrentTeams()
   if (teamsString !== null && teams?.length > 0) {
@@ -112,6 +103,7 @@ export function loadScores () {
       }
     }
   } else {
+    addTeam()
     current_team = 0
   }
 }
@@ -123,15 +115,16 @@ export function loadScores () {
 /**
  * Remove all scores and players
  */
-export function resetAll() {
+export function resetAll () {
   teams = []
+  addTeam()
   current_team = 0
 }
 
 /**
  * Only reset round scores and playing team
  */
-export function storeRoundScores() {
+export function storeRoundScores () {
   current_team = 0
   for (let team in teams) {
     teams[team].totalScore += teams[team].roundScore
@@ -143,6 +136,6 @@ export function storeRoundScores() {
  * Reset round and party scores to 0
  * // TODO total game scores
  */
-export function restart() {
+export function restart () {
   storeRoundScores()
 }

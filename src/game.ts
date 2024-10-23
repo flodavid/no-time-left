@@ -1,7 +1,7 @@
 import { words, expressions } from './words.ts'
 import * as Utils from './utils.ts'
 import { Timer } from './timer.ts'
-import { loadScores, resetTeams, addPointToCurrentTeam, storeRoundScores } from './teams.ts';
+import { loadScores, resetTeams, addPointToCurrentTeam, storeRoundScores, goToNextTeam } from './teams.ts';
 export { getCurrentTeam, addTeam, goToNextTeam, getTeams, isLastTeam } from './teams.ts';
 
 const GAME_WORDS_NUMBER : number = 15 // TODO replace by user input
@@ -110,6 +110,7 @@ export function endRound () {
   // Go to next round if it is not the last one
   ++round
   if (round < Round.End) {
+    goToNextTeam()
     readGameWords()
     guessedWords = []
   }
@@ -189,20 +190,17 @@ export function isTimerRunning () : boolean {
  * Read the gamewords from the URL and add them to the game if there are none yet
  */
 function readGameWords () {
-  // If game words have not been initialized, get words from URL and store them
-  if (gameWords?.length === 0) {
-    const url = new URL(window.location.href)
-    const urlWords = url.searchParams.get('words')
-    const storedWordList = urlWords !== null ? urlWords?.split('_') : []
-    for (const word of storedWordList) {
-      if (gameWords.length === GAME_WORDS_NUMBER) break
-      gameWords.push(Utils.reverseString(decodeURIComponent(word)))
-    }
-    Utils.shuffleArray(gameWords)
-    
-  }
+  gameWords = []
 
-  if (gameWords === null) gameWords = []
+  // Get words from URL and store them
+  const url = new URL(window.location.href)
+  const urlWords = url.searchParams.get('words')
+  const storedWordList = urlWords !== null ? urlWords?.split('_') : []
+  for (const word of storedWordList) {
+    if (gameWords.length === GAME_WORDS_NUMBER) break
+    gameWords.push(Utils.reverseString(decodeURIComponent(word)))
+  }
+  Utils.shuffleArray(gameWords)
 }
 
 function nextRandomWord () {
