@@ -1,9 +1,9 @@
 export class Timer {
-    private timerText: HTMLDivElement;
-    private interval: number | null;
-    private seconds: number;
-    private minutes: number;
-    private static INITIAL_TIME_SECONDS : number = 30 // TODO replace by user input
+    private timerText: HTMLDivElement
+    private interval: number | null
+    private seconds: number
+    private minutes: number
+    private initialTimeSeconds : number
     
     public onTimerEnd: Array<() => void>
 
@@ -13,11 +13,15 @@ export class Timer {
         this.seconds = 0;
         this.minutes = 0;
         this.onTimerEnd = []
+        this.initialTimeSeconds = 30 // TODO replace by user input
+        if (location.hostname === "localhost") {
+            this.initialTimeSeconds = 3
+        }
     }
 
     public start(): void {
-        this.seconds = Timer.INITIAL_TIME_SECONDS % 60;
-        this.minutes = Math.floor(Timer.INITIAL_TIME_SECONDS / 60 );
+        this.seconds = this.initialTimeSeconds % 60;
+        this.minutes = Math.floor(this.initialTimeSeconds / 60 );
         this.resume()
     }
 
