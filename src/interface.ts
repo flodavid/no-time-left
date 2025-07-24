@@ -3,7 +3,8 @@ import * as Game from './game.ts'
 let instruction: HTMLParagraphElement
 let wordParagraph: HTMLParagraphElement
 let round: HTMLSpanElement, team: HTMLSpanElement, score: HTMLSpanElement, remainingNumber: HTMLSpanElement
-let scoreGroup: HTMLDivElement, timeGroup: HTMLDivElement, turnButtonsGroup: HTMLDivElement
+let scoreGroup: HTMLDivElement, timeGroup: HTMLDivElement, turnButtonsGroup: HTMLDivElement,
+    roundButtonsGroup: HTMLDivElement
 let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, resumeButton: HTMLButtonElement,
     skipButton: HTMLButtonElement, guessButton: HTMLButtonElement,
     resetButton: HTMLButtonElement, nextRoundButton: HTMLButtonElement,
@@ -50,26 +51,34 @@ export function setupTimerButtons (
 }
 
 export function setupTurnButtons(group: HTMLDivElement,
-                                 skip_word: HTMLButtonElement, guessed_word: HTMLButtonElement,
-                                 next_team: HTMLButtonElement, add_team: HTMLButtonElement,
-                                 add_team_next_round: HTMLButtonElement, next_round: HTMLButtonElement)
+                                 skip_word: HTMLButtonElement, guessed_word: HTMLButtonElement)
 {
   turnButtonsGroup = group
   skipButton = skip_word
   guessButton = guessed_word
+
+  skipButton.addEventListener('click', () => doSkipWord())
+  guessButton.addEventListener('click', () => doGuessedWord())
+}
+
+export function setupRoundButtons(group: HTMLDivElement,
+                                 next_team: HTMLButtonElement, add_team: HTMLButtonElement,
+                                 add_team_next_round: HTMLButtonElement, next_round: HTMLButtonElement)
+{
+  roundButtonsGroup = group
   nextTeamButton = next_team
   addTeamButton = add_team
   addTeamNextRoundButton = add_team_next_round
   nextRoundButton = next_round
 
-  skipButton.addEventListener('click', () => doSkipWord())
-  guessButton.addEventListener('click', () => doGuessedWord())
   nextTeamButton.addEventListener('click', () => doNextTeam())
-  addTeamButton.addEventListener('click', () => doAddTeam())
+  addTeamButton.addEventListener('click', () => {
+    doAddTeam()
+  })
   addTeamNextRoundButton.addEventListener('click', () => {
     doAddTeam()
     doNextRound()
-    addTeamNextRoundButton.style.display = 'none'
+    // addTeamNextRoundButton.style.display = 'none'
   })
   nextRoundButton.addEventListener('click', () => doNextRound())
 }
@@ -91,8 +100,9 @@ function doNextTeam () {
 
 function doAddTeam () {
   Game.addTeam()
+  undisplayElement(addTeamButton)
   // instruction.innerText = 
-  nextTeamClicked()
+  doNextTeam()
 }
 
 export function setupResetGame (button: HTMLButtonElement) {
@@ -110,17 +120,19 @@ export function setupResetGame (button: HTMLButtonElement) {
     // Reset buttons
     startButton.hidden = false
     scoreGroup.hidden = true
-    timeGroup.hidden = true
+    undisplayElement(timeGroup)
     wordParagraph.style.visibility = 'hidden'
-    turnButtonsGroup.style.visibility = 'hidden'
+    undisplayElement(turnButtonsGroup)
+    undisplayElement(roundButtonsGroup)
     pauseButton.hidden = true
     pauseButton.style.visibility = 'visible'
     resumeButton.hidden = true
     skipButton.style.display = 'initial'
     guessButton.style.display = 'initial'
-    nextRoundButton.style.display = 'none'
-    nextTeamButton.style.display = 'initial'
-    addTeamNextRoundButton.style.display = 'none'
+    undisplayElement(nextTeamButton)
+    displayElement(addTeamButton)
+    undisplayElement(addTeamNextRoundButton)
+    undisplayElement(nextRoundButton)
     resetButton.style.visibility = "hidden"
   }
   button.addEventListener('click', () => reset())
@@ -136,12 +148,8 @@ function nextTeamClicked () {
   startButton.hidden = false
   skipButton.disabled = true
   guessButton.disabled = true
-  skipButton.style.display = 'initial'
-  guessButton.style.display = 'initial'
-  nextTeamButton.style.display = 'none'
-  addTeamButton.style.display = 'none'
-  addTeamNextRoundButton.style.display = 'none'
-  nextRoundButton.style.display = 'none'
+  undisplayElement(roundButtonsGroup)
+
   resetButton.style.visibility = 'hidden'
 }
 
@@ -151,10 +159,9 @@ function doNextRound () {
   updateTexts()
   
   startButton.hidden = false
-  timeGroup.hidden = true
-  nextRoundButton.style.display = 'none'
-  addTeamButton.style.display = 'none'
-  nextTeamButton.style.display = 'none'
+  undisplayElement(timeGroup)
+  undisplayElement(roundButtonsGroup)
+
   resetButton.style.visibility = "visible"
 }
 
@@ -189,8 +196,8 @@ function updateTexts () {
     if (Game.round === Game.Round.End - 1) {
       /* End of game screen */
       instruction.innerText = 'Partie terminée\n'
-      scoreGroup.hidden = true
-      timeGroup.hidden = true
+      undisplayElement(scoreGroup)
+      undisplayElement(timeGroup)
       // Printing scores. TODO improve it
       Game.getTeams().forEach(team => {
         instruction.innerText += '\n Equipe ' + team.name + ' : ' + team.totalScore + ' points'
@@ -209,19 +216,18 @@ function doStartGame () {
   
   updateTexts()
   
-  startButton.hidden = true
-  timeGroup.hidden = false
-  scoreGroup.hidden = false
-  turnButtonsGroup.style.visibility = 'visible'
+  // Actions during the guessing phase
+  displayElement(scoreGroup)
+
+  displayElement(turnButtonsGroup)
   guessButton.disabled = false
   skipButton.disabled = false
-  pauseButton.hidden = false
+  
+  undisplayElement(startButton)
+  displayElement(timeGroup)
+
   resetButton.style.visibility = "visible"
   resetButton.disabled = true
-  skipButton.style.display = 'inline'
-  guessButton.style.display = 'inline'
-  nextTeamButton.style.display = 'none'
-  addTeamButton.style.display = 'none'
 }
 
 function doPauseGame () {
@@ -253,29 +259,65 @@ function doResumeGame () {
 function doEndTimer () {
   console.log("end of timer")
   // updateTexts()
-  instruction.innerText = 'Fin du temps !'
+  instruction.innerText = 'Fin du temps !\n\nPassez le téléphone à l\'équipe suivante'
 
-  wordParagraph.style.visibility = "hidden"
-  startButton.hidden = true
-  // The pause button should disappear, but still leave an empty space
-  pauseButton.style.visibility = 'hidden'
-  skipButton.style.display = 'none'
-  guessButton.style.display = 'none'
-  resetButton.disabled = false
+  hideElement(wordParagraph)
+  undisplayElement(timeGroup)
+  undisplayElement(turnButtonsGroup)
+  hideElement(resetButton)
 
-  if (Game.hasWords()) {
-    nextTeamButton.style.display = 'inline'
-    if (Game.isLastTeam()) {
-      addTeamButton.style.display = 'inline'
-    }
-  } else {
-    if (Game.round < Game.Round.End - 1) {
-      if (Game.isLastTeam()) {
-        addTeamNextRoundButton.style.display = 'inline'
+  // Wait 3 seconds before show round buttons to avoid miss clicks
+  window.setTimeout(() => {
+    instruction.innerText = '\n\n Vous pouvez'
+
+    displayElement(roundButtonsGroup)
+    resetButton.disabled = false
+    showElement(resetButton)
+
+    if (Game.hasWords()) {
+      if (Game.getTeams().length > 1) {
+        instruction.innerText += ' démarrer le tour suivant'
+        displayElement(nextTeamButton)
+
+        if (Game.isLastTeam()) {
+          displayElement(addTeamButton)
+          instruction.innerText += ' ou ajouter une équipe à la manche actuelle'
+        } else undisplayElement(addTeamButton)
+      } else {
+        instruction.innerText += ' ajouter une seconde équipe à la partie'
       }
-      // Not last round
-      nextRoundButton.style.display = 'inline'
+    } else {
+      if (Game.round < Game.Round.End - 1) {
+        if (Game.isLastTeam()) {
+          displayElement(addTeamNextRoundButton)
+          instruction.innerText += ' passer à la manche suivante tout en ajoutant une équipe ou simplement'
+        }
+        instruction.innerText += ' passer à la manche suivante'
+        // Not last round
+        displayElement(nextRoundButton)
+      }
     }
-  }
-  resetButton.style.visibility = "visible"
+  }, 4000)
 }
+
+///////////////////////////////////////
+//              UTILS                //
+///////////////////////////////////////
+
+function undisplayElement (element : HTMLElement) {
+  element.hidden = true
+}
+
+function displayElement (element : HTMLElement) {
+  element.hidden = false
+}
+
+function hideElement (element : HTMLElement) {
+  element.style.visibility = "hidden"
+}
+
+function showElement (element : HTMLElement) {
+  element.style.visibility = "visible"
+  // element.hidden = false
+}
+

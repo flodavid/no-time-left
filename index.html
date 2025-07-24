@@ -32,13 +32,15 @@
             Cliquer sur "Démarrer lorsque vous êtes prêt(e)s</p>
           <p id="word"></p>
         </div>
-        <div id="turn_buttons" style="visibility: hidden;">
+        <div id="turn_buttons" hidden>
           <button id="skip_word" type="button">Passer le mot</button>
           <button id="guessed_word" type="button">Deviné</button>
-          <button id="next_team" type="button" style="display: none;">Equipe suivante</button>
-          <button id="add_team" type="button" style="display: none;">Ajouter une équipe</button>
-          <button id="add_team_next_round" type="button" style="display: none;">Ajouter une équipe et manche suivante</button>          
-          <button id="next_round" type="button" style="display: none;">Manche suivante</button>
+        </div>
+        <div id="round_buttons" hidden>
+          <button id="next_team" type="button" hidden>Equipe suivante</button>
+          <button id="add_team" type="button">Ajouter une équipe</button>
+          <button id="add_team_next_round" type="button" hidden>Ajouter une équipe et manche suivante</button>          
+          <button id="next_round" type="button" hidden>Manche suivante</button>
         </div>
         <button id="start">Démarrer</button> 
       </div>
@@ -47,14 +49,14 @@
           <span>Reste </span><span id="remaining">0</span><span> mots</span>
           <h2 id="timer">00:00</h2>
         </div>
-        <button id="pause" hidden>Pause</button>
+        <button id="pause">Pause</button>
         <button id="resume" hidden>Reprendre</button>
       </div>
       <div class="card">
         <button id="reset_game" type="button">Réinitialiser</button>
       </div>
       
-      <button id="end_timer" type="button" style="font-size: 4px; position: absolute; top: 5px">SIMULATION Fin timer</button>
+      <button id="end_timer" type="button" hidden style="position: absolute; top: 5px">SIMULATION Fin timer</button>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
