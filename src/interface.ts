@@ -78,7 +78,6 @@ export function setupRoundButtons(group: HTMLDivElement,
   addTeamNextRoundButton.addEventListener('click', () => {
     doAddTeam()
     doNextRound()
-    // addTeamNextRoundButton.style.display = 'none'
   })
   nextRoundButton.addEventListener('click', () => doNextRound())
 }
@@ -101,7 +100,6 @@ function doNextTeam () {
 function doAddTeam () {
   Game.addTeam()
   undisplayElement(addTeamButton)
-  // instruction.innerText = 
   doNextTeam()
 }
 
@@ -118,39 +116,37 @@ export function setupResetGame (button: HTMLButtonElement) {
     instruction.innerText = 'Prêts à commencer ?'
 
     // Reset buttons
-    startButton.hidden = false
-    scoreGroup.hidden = true
+    displayElement(startButton)
+    undisplayElement(scoreGroup)
     undisplayElement(timeGroup)
-    wordParagraph.style.visibility = 'hidden'
+    hideElement(wordParagraph)
     undisplayElement(turnButtonsGroup)
     undisplayElement(roundButtonsGroup)
-    pauseButton.hidden = true
-    pauseButton.style.visibility = 'visible'
-    resumeButton.hidden = true
-    skipButton.style.display = 'initial'
-    guessButton.style.display = 'initial'
+    undisplayElement(pauseButton)
+    showElement(pauseButton)
+    undisplayElement(resumeButton)
     undisplayElement(nextTeamButton)
     displayElement(addTeamButton)
     undisplayElement(addTeamNextRoundButton)
     undisplayElement(nextRoundButton)
-    resetButton.style.visibility = "hidden"
+    hideElement(resetButton)
   }
   button.addEventListener('click', () => reset())
 
   if (!Game.hasWords()) {
-    resetButton.style.visibility = "hidden"
+    hideElement(resetButton)
   }
 }
 
 function nextTeamClicked () {
   updateTexts()
 
-  startButton.hidden = false
-  skipButton.disabled = true
-  guessButton.disabled = true
+  displayElement(startButton)
+  disableButton(skipButton)
+  disableButton(guessButton)
   undisplayElement(roundButtonsGroup)
 
-  resetButton.style.visibility = 'hidden'
+  hideElement(resetButton)
 }
 
 function doNextRound () {
@@ -158,11 +154,11 @@ function doNextRound () {
   
   updateTexts()
   
-  startButton.hidden = false
+  displayElement(startButton)
   undisplayElement(timeGroup)
   undisplayElement(roundButtonsGroup)
 
-  resetButton.style.visibility = "visible"
+  showElement(resetButton)
 }
 
 export function setupFakeEndTimer (button: HTMLButtonElement) {
@@ -187,10 +183,10 @@ function updateTexts () {
     if (Game.randomWord !== undefined && Game.isTimerRunning()) {
       // instruction.innerText = 'Prêts pour la manche suivante ?'
       wordParagraph.innerText = Game.randomWord
-      wordParagraph.style.visibility = "visible"
+      showElement(wordParagraph)
     } else {
       instruction.innerText = 'En attente des joueurs'
-      wordParagraph.style.visibility = "hidden"
+      hideElement(wordParagraph)
     }
   } else {
     if (Game.round === Game.Round.End - 1) {
@@ -220,14 +216,14 @@ function doStartGame () {
   displayElement(scoreGroup)
 
   displayElement(turnButtonsGroup)
-  guessButton.disabled = false
-  skipButton.disabled = false
+  enableButton(guessButton)
+  enableButton(skipButton)
   
   undisplayElement(startButton)
   displayElement(timeGroup)
 
-  resetButton.style.visibility = "visible"
-  resetButton.disabled = true
+  showElement(resetButton)
+  disableButton(resetButton)
 }
 
 function doPauseGame () {
@@ -236,11 +232,11 @@ function doPauseGame () {
 
   updateTexts()
 
-  guessButton.disabled = true
-  skipButton.disabled = true
-  pauseButton.hidden = true
-  resumeButton.hidden = false
-  resetButton.disabled = false
+  disableButton(guessButton)
+  disableButton(skipButton)
+  undisplayElement(pauseButton)
+  displayElement(resumeButton)
+  enableButton(resetButton)
 }
 
 function doResumeGame () {
@@ -249,11 +245,11 @@ function doResumeGame () {
 
   updateTexts()
   
-  guessButton.disabled = false
-  skipButton.disabled = false
-  pauseButton.hidden = false
-  resumeButton.hidden = true
-  resetButton.disabled = true
+  enableButton(guessButton)
+  enableButton(skipButton)
+  displayElement(pauseButton)
+  undisplayElement(resumeButton)
+  disableButton(resetButton)
 }
 
 function doEndTimer () {
@@ -271,7 +267,7 @@ function doEndTimer () {
     instruction.innerText = '\n\n Vous pouvez'
 
     displayElement(roundButtonsGroup)
-    resetButton.disabled = false
+    enableButton(resetButton)
     showElement(resetButton)
 
     if (Game.hasWords()) {
@@ -321,3 +317,10 @@ function showElement (element : HTMLElement) {
   // element.hidden = false
 }
 
+function enableButton (button : HTMLButtonElement) {
+  button.disabled = false
+}
+
+function disableButton (button : HTMLButtonElement) {
+  button.disabled = true
+}
