@@ -112,6 +112,25 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.main-button {
+  color: #fdfdfd;
+  background-color: #1990f2;
+}
+.main-button:disabled {
+  color: #9ccce4;
+}
+button.main-button:hover {
+  border-color: #d6e0eb;
+}
+
+#skip_word {
+  color: #fdfdfd;
+  background-color: #646464;
+}
+#skip_word:disabled {
+  color:#999999
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -121,6 +140,12 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #fdfdfd;
+  }
+  #skip_word {
+    background-color: #a3a3a3;
+  }
+  #skip_word:disabled {
+    color:#c7c7c7
   }
 }

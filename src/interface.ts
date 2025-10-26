@@ -100,6 +100,7 @@ function doNextTeam () {
 function doAddTeam () {
   Game.addTeam()
   undisplayElement(addTeamButton)
+  unsetMainButton(addTeamButton)
   doNextTeam()
 }
 
@@ -119,7 +120,7 @@ export function setupResetGame (button: HTMLButtonElement) {
     displayElement(startButton)
     undisplayElement(scoreGroup)
     undisplayElement(timeGroup)
-    hideElement(wordParagraph)
+    undisplayElement(wordParagraph)
     undisplayElement(turnButtonsGroup)
     undisplayElement(roundButtonsGroup)
     undisplayElement(pauseButton)
@@ -157,6 +158,7 @@ function doNextRound () {
   displayElement(startButton)
   undisplayElement(timeGroup)
   undisplayElement(roundButtonsGroup)
+  unsetMainButton(addTeamButton)
 
   showElement(resetButton)
 }
@@ -183,10 +185,10 @@ function updateTexts () {
     if (Game.randomWord !== undefined && Game.isTimerRunning()) {
       // instruction.innerText = 'Prêts pour la manche suivante ?'
       wordParagraph.innerText = Game.randomWord
-      showElement(wordParagraph)
+      displayElement(wordParagraph)
     } else {
       instruction.innerText = 'En attente des joueurs'
-      hideElement(wordParagraph)
+      undisplayElement(wordParagraph)
     }
   } else {
     if (Game.round === Game.Round.End - 1) {
@@ -257,7 +259,7 @@ function doEndTimer () {
   // updateTexts()
   instruction.innerText = 'Fin du temps !\n\nPassez le téléphone à l\'équipe suivante'
 
-  hideElement(wordParagraph)
+  undisplayElement(wordParagraph)
   undisplayElement(timeGroup)
   undisplayElement(turnButtonsGroup)
   hideElement(resetButton)
@@ -276,10 +278,13 @@ function doEndTimer () {
         displayElement(nextTeamButton)
 
         if (Game.isLastTeam()) {
+          setMainButton(addTeamButton)
           displayElement(addTeamButton)
           instruction.innerText += ' ou ajouter une équipe à la manche actuelle'
         } else undisplayElement(addTeamButton)
       } else {
+        setMainButton(addTeamButton)
+        displayElement(addTeamButton)
         instruction.innerText += ' ajouter une seconde équipe à la partie'
       }
     } else {
@@ -291,6 +296,7 @@ function doEndTimer () {
         instruction.innerText += ' passer à la manche suivante'
         // Not last round
         displayElement(nextRoundButton)
+        hideElement(nextTeamButton)
       }
     }
   }, 4000)
@@ -324,3 +330,13 @@ function enableButton (button : HTMLButtonElement) {
 function disableButton (button : HTMLButtonElement) {
   button.disabled = true
 }
+
+function setMainButton (button : HTMLButtonElement) {
+  button.classList.add("main-button")
+}
+
+function unsetMainButton (button : HTMLButtonElement) {
+  button.classList.remove("main-button")
+}
+
+

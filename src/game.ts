@@ -4,7 +4,12 @@ import { Timer } from './timer.ts'
 import { loadScores, resetTeams, addPointToCurrentTeam, storeRoundScores, goToNextTeam } from './teams.ts';
 export { getCurrentTeam, addTeam, goToNextTeam, getTeams, isLastTeam } from './teams.ts';
 
-const GAME_WORDS_NUMBER : number = 15 // TODO replace by user input
+let GAME_WORDS_NUMBER: number
+if (location.hostname === "localhost") {
+  GAME_WORDS_NUMBER = 5
+} else {
+  GAME_WORDS_NUMBER = 20 // TODO replace by user input
+}
 const timer = new Timer('timer');
 
 export enum Round {
