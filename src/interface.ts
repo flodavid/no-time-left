@@ -196,7 +196,7 @@ function updateTexts () {
       undisplayElement(timeGroup)
       // Printing scores. TODO improve it
       Game.getTeams().forEach(team => {
-        instruction.innerText += '\n Equipe ' + team.name + ' : ' + team.totalScore + ' points'
+        instruction.innerText += '\n Équipe ' + team.name + ' : ' + team.totalScore + ' points'
       })
     } else instruction.innerText = 'Tous les mots ont été devinés. Fin du round'
   }
