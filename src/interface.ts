@@ -158,6 +158,7 @@ function doNextRound () {
   displayElement(startButton)
   undisplayElement(timeGroup)
   undisplayElement(roundButtonsGroup)
+  undisplayElement(addTeamNextRoundButton)
   unsetMainButton(addTeamButton)
 
   showElement(resetButton)
