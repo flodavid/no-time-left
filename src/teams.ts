@@ -36,6 +36,7 @@ export function resetTeams () {
   console.log('Resetting teams')
   teams = []
   addTeam()
+  addTeam()
   current_team = 0
 }
 
@@ -103,7 +104,9 @@ export function loadScores () {
       }
     }
   } else {
-    addTeam()
+    do {
+      addTeam()
+    } while (teams?.length < 2)
     current_team = 0
   }
 }

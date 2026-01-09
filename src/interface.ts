@@ -8,7 +8,7 @@ let scoreGroup: HTMLDivElement, timeGroup: HTMLDivElement, turnButtonsGroup: HTM
 let startButton: HTMLButtonElement, pauseButton: HTMLButtonElement, resumeButton: HTMLButtonElement,
     skipButton: HTMLButtonElement, guessButton: HTMLButtonElement,
     resetButton: HTMLButtonElement, nextRoundButton: HTMLButtonElement,
-    nextTeamButton: HTMLButtonElement, addTeamButton: HTMLButtonElement, addTeamNextRoundButton: HTMLButtonElement
+    nextTeamButton: HTMLButtonElement, addTeamButton: HTMLButtonElement
 
 /**
  * 
@@ -63,21 +63,16 @@ export function setupTurnButtons(group: HTMLDivElement,
 
 export function setupRoundButtons(group: HTMLDivElement,
                                  next_team: HTMLButtonElement, add_team: HTMLButtonElement,
-                                 add_team_next_round: HTMLButtonElement, next_round: HTMLButtonElement)
+                                 next_round: HTMLButtonElement)
 {
   roundButtonsGroup = group
   nextTeamButton = next_team
   addTeamButton = add_team
-  addTeamNextRoundButton = add_team_next_round
   nextRoundButton = next_round
 
   nextTeamButton.addEventListener('click', () => doNextTeam())
   addTeamButton.addEventListener('click', () => {
     doAddTeam()
-  })
-  addTeamNextRoundButton.addEventListener('click', () => {
-    doAddTeam()
-    doNextRound()
   })
   nextRoundButton.addEventListener('click', () => doNextRound())
 }
@@ -100,7 +95,6 @@ function doNextTeam () {
 function doAddTeam () {
   Game.addTeam()
   undisplayElement(addTeamButton)
-  unsetMainButton(addTeamButton)
   doNextTeam()
 }
 
@@ -117,6 +111,7 @@ export function setupResetGame (button: HTMLButtonElement) {
     instruction.innerText = 'Prêts à commencer ?'
 
     // Reset buttons
+    unsetMainButton(resetButton)
     displayElement(startButton)
     undisplayElement(scoreGroup)
     undisplayElement(timeGroup)
@@ -128,7 +123,6 @@ export function setupResetGame (button: HTMLButtonElement) {
     undisplayElement(resumeButton)
     undisplayElement(nextTeamButton)
     displayElement(addTeamButton)
-    undisplayElement(addTeamNextRoundButton)
     undisplayElement(nextRoundButton)
     hideElement(resetButton)
   }
@@ -158,7 +152,6 @@ function doNextRound () {
   displayElement(startButton)
   undisplayElement(timeGroup)
   undisplayElement(roundButtonsGroup)
-  unsetMainButton(addTeamButton)
 
   showElement(resetButton)
 }
@@ -182,6 +175,9 @@ function updateTexts () {
   score.innerText = currentTeam ? currentTeam.roundScore.toString() : '0'
 
   if (Game.hasWords()) {
+    if (Game.remainingWords() > 1) enableButton(skipButton)
+    else disableButton(skipButton)
+
     if (Game.randomWord !== undefined && Game.isTimerRunning()) {
       // instruction.innerText = 'Prêts pour la manche suivante ?'
       wordParagraph.innerText = Game.randomWord
@@ -194,13 +190,16 @@ function updateTexts () {
     if (Game.round === Game.Round.End - 1) {
       /* End of game screen */
       instruction.innerText = 'Partie terminée\n'
+      setMainButton(resetButton)
       undisplayElement(scoreGroup)
+      undisplayElement(nextRoundButton)
+      undisplayElement(addTeamButton)
       undisplayElement(timeGroup)
       // Printing scores. TODO improve it
       Game.getTeams().forEach(team => {
         instruction.innerText += '\n Équipe ' + team.name + ' : ' + team.totalScore + ' points'
       })
-    } else instruction.innerText = 'Tous les mots ont été devinés. Fin du round'
+    } else instruction.innerText = 'Tous les mots ont été devinés. Fin de la manche'
   }
     
     // Remaining
@@ -257,7 +256,7 @@ function doResumeGame () {
 function doEndTimer () {
   console.log("end of timer")
   // updateTexts()
-  instruction.innerText = 'Fin du temps !\n\nPassez le téléphone à l\'équipe suivante'
+  instruction.innerText = 'Fin du temps !\n\nPassez la main à l\'équipe suivante.'
 
   undisplayElement(wordParagraph)
   undisplayElement(timeGroup)
@@ -266,40 +265,27 @@ function doEndTimer () {
 
   // Wait 3 seconds before show round buttons to avoid miss clicks
   window.setTimeout(() => {
-    instruction.innerText = '\n\n Vous pouvez'
-
     displayElement(roundButtonsGroup)
     enableButton(resetButton)
     showElement(resetButton)
 
     if (Game.hasWords()) {
-      if (Game.getTeams().length > 1) {
-        instruction.innerText += ' démarrer le tour suivant'
-        displayElement(nextTeamButton)
-
-        if (Game.isLastTeam()) {
-          setMainButton(addTeamButton)
-          displayElement(addTeamButton)
-          instruction.innerText += ' ou ajouter une équipe à la manche actuelle'
-        } else undisplayElement(addTeamButton)
-      } else {
-        setMainButton(addTeamButton)
-        displayElement(addTeamButton)
-        instruction.innerText += ' ajouter une seconde équipe à la partie'
-      }
+      displayElement(nextTeamButton)
+      undisplayElement(nextRoundButton)
     } else {
       if (Game.round < Game.Round.End - 1) {
         if (Game.isLastTeam()) {
-          displayElement(addTeamNextRoundButton)
-          instruction.innerText += ' passer à la manche suivante tout en ajoutant une équipe ou simplement'
-        }
-        instruction.innerText += ' passer à la manche suivante'
+          instruction.innerText += `\nLa manche suivante va démarrer.
+          
+          Vous pouvez également ajouter une équipe à la manche actuelle.`
+          displayElement(addTeamButton)
+        } else undisplayElement(addTeamButton)
         // Not last round
         displayElement(nextRoundButton)
-        hideElement(nextTeamButton)
+        undisplayElement(nextTeamButton)
       }
     }
-  }, 4000)
+  }, location.hostname === "localhost" ? 500 : 3000)
 }
 
 ///////////////////////////////////////

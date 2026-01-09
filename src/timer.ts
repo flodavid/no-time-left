@@ -15,7 +15,7 @@ export class Timer {
         this.onTimerEnd = []
         this.initialTimeSeconds = 30 // TODO replace by user input
         if (location.hostname === "localhost") {
-            this.initialTimeSeconds = 3
+            this.initialTimeSeconds = 2
         }
     }
 

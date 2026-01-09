@@ -6,7 +6,7 @@ export { getCurrentTeam, addTeam, goToNextTeam, getTeams, isLastTeam } from './t
 
 let GAME_WORDS_NUMBER: number
 if (location.hostname === "localhost") {
-  GAME_WORDS_NUMBER = 5
+  GAME_WORDS_NUMBER = 2
 } else {
   GAME_WORDS_NUMBER = 20 // TODO replace by user input
 }
@@ -108,7 +108,7 @@ export function resume () {
 }
 
 /**
- * End the round, intialize a new one if necessary
+ * End the round, initialize a new one if necessary
  */
 export function endRound () {
   storeRoundScores()
@@ -147,14 +147,14 @@ export function addEndTimerAction (endTimerAction: () => void) {
  * Words, teams, scores are wiped, buttons are set to their initial state 
  */
 export function resetGame () {
-  initGame()
-  timer.reset()
-  resetTeams()
-  
   // Reset words in URL
   const url = new URL(window.location.href)
   url.searchParams.delete('words')
   history.pushState({}, '', url)
+
+  initGame()
+  timer.reset()
+  resetTeams()
 }
 
 /******************/
