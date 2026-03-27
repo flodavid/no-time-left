@@ -182,9 +182,11 @@ function updateTexts () {
       // instruction.innerText = 'Prêts pour la manche suivante ?'
       wordParagraph.innerText = Game.randomWord
       displayElement(wordParagraph)
+      wordParagraph.classList.remove("do-not-see-hover")
     } else {
       instruction.innerText = 'En attente des joueurs'
-      undisplayElement(wordParagraph)
+      wordParagraph.innerText = ' '
+      wordParagraph.classList.add("do-not-see-hover")
     }
   } else {
     if (Game.round === Game.Round.End - 1) {

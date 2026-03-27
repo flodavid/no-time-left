@@ -123,6 +123,10 @@ button.main-button:hover {
   border-color: #d6e0eb;
 }
 
+.do-not-see-hover:hover:before {
+  content: "🙈";
+}
+
 #skip_word {
   color: #fdfdfd;
   background-color: #646464;

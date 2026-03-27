@@ -1,0 +1,38 @@
+{
+  "name": "No Time Left",
+  "short_name": "NoTimeLeft",
+  "description": "Jeu style jeu de société où vous faites deviner des mots aléatoire à vos amis",
+  "id": "https://flodavid.github.io/no-time-left/",
+  "start_url": "https://flodavid.github.io/no-time-left/",
+  "scope": "https://flodavid.github.io/no-time-left/",
+  "display": "fullscreen",
+  "orientation": "portrait-primary",
+  "background_color": "#fdfdfd",
+  "theme_color": "#1abc9c",
+  "icons": [
+    {
+      "src": "fast-time.svg",
+      "type": "image/svg+xml",
+      "sizes": "48x48 72x72 96x96 128x128 192x192 256x256 512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "fast-time-44x44.png",
+      "type": "image/png",
+      "sizes": "44x44",
+      "purpose": "any"
+    },
+    {
+      "src": "fast-time-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "fast-time-1024x1024.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "purpose": "any"
+    }
+  ]
+}

@@ -18,3 +18,6 @@ To test after building, use `npm run preview`
 ## Publish
 
 To release on Github pages, you need to move the files from *dist* to *docs* after running `build`
+
+TODO
++ Ajout : proposer d’effacer les mots quand on recharge la page 
