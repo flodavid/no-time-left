@@ -53,11 +53,12 @@ export class Timer {
             this.interval = null;
         }
         
-        // 1s vibration
-        const haptics = new WebHaptics()
-        haptics.trigger("buzz")
-        const canVibrate = window.navigator.vibrate
-        canVibrate ?? window.navigator.vibrate(1000)
+        // 1s vibration at end of timer
+        if (this.seconds === 0 && this.minutes === 0) {
+            console.log("vibrating for 1s")
+            const haptics = new WebHaptics()
+            haptics.trigger("buzz")
+        }
 
         // every so often, use the funny alarm instead of the classic one
         if (Math.floor(Math.random() * Timer.funnySoundOneIn) == 0) {
